@@ -141,10 +141,16 @@ describe('API client', () => {
       expect(err.body.details).toBe('x');
     });
 
-    it('falls back to HTTP status message when error field missing', () => {
-      const err = new ApiClientError(500, { error: '' });
-      // empty string is falsy so falls back
+    it('falls back to HTTP status message when error field is null-ish', () => {
+      const err = new ApiClientError(500, { error: null as unknown as string });
+      // null/undefined triggers ?? fallback; empty string does not
       expect(err.message).toBe('HTTP 500');
+    });
+
+    it('uses empty string message when error field is empty string', () => {
+      const err = new ApiClientError(500, { error: '' });
+      // ?? only falls back for null/undefined, not ''
+      expect(err.message).toBe('');
     });
   });
 });

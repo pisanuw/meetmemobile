@@ -11,7 +11,7 @@ interface UseMeetingReturn {
 
 export function useMeeting(id: string): UseMeetingReturn {
   const [meeting, setMeeting] = useState<Meeting | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!!id);
   const [error, setError] = useState<string | null>(null);
 
   const fetch = useCallback(async () => {

@@ -135,9 +135,9 @@ describe('finalizeMeeting()', () => {
 });
 
 describe('sendReminders()', () => {
-  it('posts to /api/meetings/:id/remind', async () => {
+  it('posts to /api/meetings/:id/remind-pending', async () => {
     mockPost.mockResolvedValue(undefined);
     await sendReminders('m1');
-    expect(mockPost).toHaveBeenCalledWith('/api/meetings/m1/remind');
+    expect(mockPost).toHaveBeenCalledWith('/api/meetings/m1/remind-pending');
   });
 });

@@ -1,7 +1,7 @@
 /**
  * Deep Link Handler
  *
- * When a user taps a magic link (e.g. https://meetme-2.netlify.app/api/auth/magic?token=...)
+ * When a user taps a magic link (e.g. https://meetme.pisan.me/api/auth/magic?token=...)
  * iOS opens the app via the associated domain. This hook intercepts that URL and
  * navigates to the WebViewAuthScreen so the token can be exchanged in the same
  * cookie-aware environment.

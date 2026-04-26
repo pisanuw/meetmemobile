@@ -5,9 +5,13 @@ import { ApiClientError } from '@/api/client';
 jest.mock('@/api/client', () => ({
   get: jest.fn(),
   post: jest.fn(),
-  ApiClientError: class ApiClientError extends Error {
-    constructor(public status: number, public body: { error: string }) {
+  ApiClientError: class MockApiClientError extends Error {
+    status: number;
+    body: { error: string };
+    constructor(status: number, body: { error: string }) {
       super(body.error);
+      this.status = status;
+      this.body = body;
     }
   },
 }));

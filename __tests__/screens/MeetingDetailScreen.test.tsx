@@ -73,7 +73,16 @@ import { useMeeting } from '@/hooks/useMeeting';
 
 const mockUseMeeting = useMeeting as jest.Mock;
 
-afterEach(() => jest.clearAllMocks());
+beforeEach(() => {
+  mockUseMeeting.mockReturnValue({
+    meeting: mockMeeting,
+    isLoading: false,
+    error: null,
+    refresh: mockRefresh,
+  });
+});
+
+afterEach(() => jest.resetAllMocks());
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
@@ -84,13 +93,13 @@ describe('MeetingDetailScreen', () => {
   });
 
   it('shows loading screen while loading', () => {
-    mockUseMeeting.mockReturnValueOnce({ meeting: null, isLoading: true, error: null, refresh: jest.fn() });
+    mockUseMeeting.mockReturnValue({ meeting: null, isLoading: true, error: null, refresh: jest.fn() });
     render(<MeetingDetailScreen />);
     expect(screen.getByTestId('loading-screen')).toBeTruthy();
   });
 
   it('shows error state when error is present', () => {
-    mockUseMeeting.mockReturnValueOnce({ meeting: null, isLoading: false, error: 'Not found', refresh: jest.fn() });
+    mockUseMeeting.mockReturnValue({ meeting: null, isLoading: false, error: 'Not found', refresh: jest.fn() });
     render(<MeetingDetailScreen />);
     expect(screen.getByText('Not found')).toBeTruthy();
   });
@@ -151,7 +160,7 @@ describe('MeetingDetailScreen', () => {
   });
 
   it('shows finalized banner when meeting is finalized', () => {
-    mockUseMeeting.mockReturnValueOnce({
+    mockUseMeeting.mockReturnValue({
       meeting: {
         ...mockMeeting,
         finalized: { date: '2025-06-02', slot: 32, durationMinutes: 60, note: 'Room B' },
@@ -166,7 +175,7 @@ describe('MeetingDetailScreen', () => {
   });
 
   it('hides mode toggle when meeting is finalized', () => {
-    mockUseMeeting.mockReturnValueOnce({
+    mockUseMeeting.mockReturnValue({
       meeting: {
         ...mockMeeting,
         finalized: { date: '2025-06-02', slot: 32, durationMinutes: 60, note: '' },
@@ -181,7 +190,7 @@ describe('MeetingDetailScreen', () => {
   });
 
   it('shows leave button for non-creator', () => {
-    mockUseMeeting.mockReturnValueOnce({
+    mockUseMeeting.mockReturnValue({
       meeting: { ...mockMeeting, creatorId: 'other-user' },
       isLoading: false,
       error: null,

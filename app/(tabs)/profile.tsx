@@ -243,7 +243,7 @@ export default function ProfileScreen() {
         {/* App info */}
         <View style={styles.appInfo}>
           <Text style={styles.appInfoText}>MeetMe v0.1.0</Text>
-          <Text style={styles.appInfoText}>meetme-2.netlify.app</Text>
+          <Text style={styles.appInfoText}>meetme.pisan.me</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

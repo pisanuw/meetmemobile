@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://meetme-2.netlify.app';
+export const API_BASE_URL = 'https://meetme.pisan.me';
 
 export const COLORS = {
   primary: '#10b981',      // emerald-500

@@ -50,5 +50,5 @@ export async function finalizeMeeting(
 
 /** Send reminder emails to non-responders (creator only). */
 export async function sendReminders(meetingId: string): Promise<void> {
-  return post<void>(`/api/meetings/${meetingId}/remind`);
+  return post<void>(`/api/meetings/${meetingId}/remind-pending`);
 }
