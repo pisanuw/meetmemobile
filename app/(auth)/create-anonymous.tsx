@@ -135,11 +135,11 @@ export default function CreateAnonymousScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={COLORS.text} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>New Meeting</Text>
         <View style={{ width: 24 }} />
+        <Text style={styles.headerTitle}>New Meeting</Text>
+        <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
+          <Text style={styles.signInLink}>Sign in</Text>
+        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
@@ -393,4 +393,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   createButton: { marginTop: SPACING.sm },
+  signInLink: {
+    fontSize: TYPOGRAPHY.fontSizes.sm,
+    fontWeight: TYPOGRAPHY.fontWeights.medium,
+    color: COLORS.primary,
+  },
 });
