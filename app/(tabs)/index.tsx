@@ -96,7 +96,7 @@ export default function DashboardScreen() {
 
         {/* Invited Meetings */}
         <Text style={[styles.sectionTitle, { marginTop: SPACING.lg }]}>
-          Meetings I'm Invited To
+          Meetings I&apos;m Invited To
         </Text>
         {invitedMeetings.length === 0 ? (
           <EmptyState message="No invitations yet." />

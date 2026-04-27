@@ -1,5 +1,4 @@
 import { sendMagicLink, getMe, logout, updateProfile, submitFeedback } from '@/api/auth';
-import { ApiClientError } from '@/api/client';
 
 // Mock the client module
 jest.mock('@/api/client', () => ({

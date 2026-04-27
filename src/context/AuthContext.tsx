@@ -23,16 +23,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // getMe() returns null on 401 — if we get here it's a network/server error.
+  // Don't clear an existing session for transient failures; leave user logged in.
+  // The error will surface to callers (e.g. profile save) which handle it.
   const refreshUser = useCallback(async () => {
-    try {
-      const me = await getMe();
-      setUser(me);
-    } catch (err: unknown) {
-      // getMe() returns null on 401 — if we get here it's a network/server error.
-      // Don't clear an existing session for transient failures; leave user logged in.
-      // The error will surface to callers (e.g. profile save) which handle it.
-      throw err;
-    }
+    const me = await getMe();
+    setUser(me);
   }, []);
 
   // Bootstrap: check if we have an active session on mount.

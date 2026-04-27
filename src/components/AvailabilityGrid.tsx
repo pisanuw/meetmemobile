@@ -64,7 +64,7 @@ export function AvailabilityGrid({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.hint}>Tap or drag to mark when you're available</Text>
+      <Text style={styles.hint}>Tap or drag to mark when you&apos;re available</Text>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {/* Time labels */}

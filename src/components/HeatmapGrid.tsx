@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import { Meeting, TimeSlot } from '@/types';
+import { Meeting } from '@/types';
 import { COLORS, SPACING, TYPOGRAPHY, slotToTime } from '@/config';
 
 interface HeatmapGridProps {
