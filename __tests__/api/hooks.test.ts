@@ -88,6 +88,15 @@ describe('useMeetings', () => {
     expect(result.current.data).toBeNull();
   });
 
+  it('uses fallback message when rejection value is not an Error instance', async () => {
+    mockListMeetings.mockRejectedValue('plain string rejection');
+
+    const { result } = renderHook(() => useMeetings());
+    await act(async () => {});
+
+    expect(result.current.error).toBe('Failed to load meetings');
+  });
+
   it('refresh re-fetches data', async () => {
     mockListMeetings.mockResolvedValue(mockMeetingsData);
 

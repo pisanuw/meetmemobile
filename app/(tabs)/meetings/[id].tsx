@@ -67,14 +67,18 @@ export default function MeetingDetailScreen() {
     );
   }
 
-  const isCreator = meeting.creatorId === user?.id;
-  const isFinalized = meeting.finalized !== null;
-  const respondedCount = meeting.participants.filter(p => p.hasResponded).length;
+  // Capture non-null meeting reference so TypeScript can narrow it inside
+  // async closures (control-flow narrowing does not propagate into closures).
+  const m = meeting;
+
+  const isCreator = m.creatorId === user?.id;
+  const isFinalized = m.finalized !== null;
+  const respondedCount = m.participants.filter(p => p.hasResponded).length;
 
   async function handleSaveAvailability() {
     setIsSaving(true);
     try {
-      await submitAvailability(meeting.id, { slots: mySlots });
+      await submitAvailability(m.id, { slots: mySlots });
       showFlash('Availability saved!', 'success');
       // Reset seed ID so the refreshed participant data re-seeds mySlots
       setSlotsMeetingId(null);
@@ -88,7 +92,7 @@ export default function MeetingDetailScreen() {
 
   async function handleSendReminders() {
     try {
-      await sendReminders(meeting.id);
+      await sendReminders(m.id);
       showFlash('Reminder emails sent!', 'success');
     } catch (err: unknown) {
       showFlash(err instanceof Error ? err.message : 'Failed to send reminders', 'error');
@@ -102,7 +106,7 @@ export default function MeetingDetailScreen() {
         text: 'Delete', style: 'destructive',
         onPress: async () => {
           try {
-            await deleteMeeting(meeting.id);
+            await deleteMeeting(m.id);
             router.replace('/(tabs)');
           } catch (err: unknown) {
             showFlash(err instanceof Error ? err.message : 'Failed to delete', 'error');
@@ -119,7 +123,7 @@ export default function MeetingDetailScreen() {
         text: 'Leave', style: 'destructive',
         onPress: async () => {
           try {
-            await leaveMeeting(meeting.id);
+            await leaveMeeting(m.id);
             router.replace('/(tabs)');
           } catch (err: unknown) {
             showFlash(err instanceof Error ? err.message : 'Failed to leave', 'error');
@@ -139,7 +143,7 @@ export default function MeetingDetailScreen() {
     if (!finalizeSlot) return;
     setIsFinalizing(true);
     try {
-      await finalizeMeeting(meeting.id, {
+      await finalizeMeeting(m.id, {
         date: finalizeSlot.date,
         slot: finalizeSlot.slot,
         durationMinutes: finalizeDuration,

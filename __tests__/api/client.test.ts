@@ -3,7 +3,7 @@ import { get, post, patch, del, ApiClientError } from '@/api/client';
 // ---------- Helpers ----------
 
 function mockFetch(status: number, body: unknown) {
-  global.fetch = jest.fn().mockResolvedValue({
+  globalThis.fetch = jest.fn().mockResolvedValue({
     ok: status >= 200 && status < 300,
     status,
     json: jest.fn().mockResolvedValue(body),
@@ -11,7 +11,7 @@ function mockFetch(status: number, body: unknown) {
 }
 
 function mockFetchError(message: string) {
-  global.fetch = jest.fn().mockRejectedValue(new Error(message));
+  globalThis.fetch = jest.fn().mockRejectedValue(new Error(message));
 }
 
 afterEach(() => jest.resetAllMocks());
@@ -55,7 +55,7 @@ describe('API client', () => {
     });
 
     it('handles non-JSON error body gracefully', async () => {
-      global.fetch = jest.fn().mockResolvedValue({
+      globalThis.fetch = jest.fn().mockResolvedValue({
         ok: false,
         status: 500,
         json: jest.fn().mockRejectedValue(new SyntaxError('bad json')),
@@ -94,7 +94,7 @@ describe('API client', () => {
     });
 
     it('handles 204 No Content', async () => {
-      global.fetch = jest.fn().mockResolvedValue({
+      globalThis.fetch = jest.fn().mockResolvedValue({
         ok: true,
         status: 204,
         json: jest.fn(),

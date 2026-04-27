@@ -177,7 +177,6 @@ describe('MeetingCard', () => {
       <MeetingCard
         meeting={baseMeeting}
         onPress={onPress}
-        testID={`meeting-card-${baseMeeting.id}`}
       />,
     );
     fireEvent.press(screen.getByTestId(`meeting-card-${baseMeeting.id}`));

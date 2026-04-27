@@ -1,9 +1,9 @@
-import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from '@/context/AuthContext';
 import { RootNavigator } from '@/navigation/RootNavigator';
 import { useDeepLinkHandler } from '@/hooks/useDeepLinkHandler';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 function AppWithDeepLinks() {
   useDeepLinkHandler();
@@ -17,10 +17,12 @@ function AppWithDeepLinks() {
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <AuthProvider>
-        <AppWithDeepLinks />
-      </AuthProvider>
-    </SafeAreaProvider>
+    <ErrorBoundary>
+      <SafeAreaProvider>
+        <AuthProvider>
+          <AppWithDeepLinks />
+        </AuthProvider>
+      </SafeAreaProvider>
+    </ErrorBoundary>
   );
 }

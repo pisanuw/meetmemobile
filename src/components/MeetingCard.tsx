@@ -8,9 +8,10 @@ import { COLORS, SPACING, TYPOGRAPHY, getDateLabel } from '@/config';
 interface MeetingCardProps {
   meeting: MeetingListItem;
   onPress: () => void;
+  testID?: string;
 }
 
-export function MeetingCard({ meeting, onPress }: MeetingCardProps) {
+export function MeetingCard({ meeting, onPress, testID }: MeetingCardProps) {
   const isFinalized = meeting.finalized !== null;
   const responseRate =
     meeting.participantCount > 0
@@ -22,7 +23,7 @@ export function MeetingCard({ meeting, onPress }: MeetingCardProps) {
   const moreDates = meeting.dates.length > 1 ? `+${meeting.dates.length - 1} more` : '';
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.75} testID={`meeting-card-${meeting.id}`}>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.75} testID={testID ?? `meeting-card-${meeting.id}`}>
       <Card style={styles.card}>
         {/* Status badge */}
         <View style={styles.header}>

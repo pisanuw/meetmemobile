@@ -250,3 +250,32 @@ P3 – Test suite still emits noisy Animated act(...) warnings: FlashMessage ani
 I want the mobile app ready to be deployed. Do not stop working until the code is in great shape.
 
 Once you have finished all the changes, go through the code once again to do cleanup and refactoring.
+
+---
+
+## 2026-04-26T20:55
+
+**User:** Fix these problems or explain why they are not an issue
+
+P1 — TypeScript compiler errors (10 errors in 3 files, block a clean type-checked build)
+1. [id].tsx — 5× 'meeting' is possibly 'null' in async handler closures
+2. client.test.ts — 4× Cannot find name 'global'
+3. components.test.tsx — Property 'testID' does not exist on type MeetingCardProps
+
+P2 — Structural / maintainability
+4. bookings.mjs — still 1,259 lines, 14 routes in one dispatch block
+5. AvailabilityGrid.tsx — branch coverage 63%, line coverage 60%
+6. useMeetings.ts — branch coverage 50%
+
+P3 — Minor / polish
+7. MeetingCard testID is not testable from outside
+8. useMeeting.ts branch coverage at exactly 75%
+9. Web meeting.js — still 1,122 lines
+10. No error boundary in the mobile app
+
+---
+
+## 2026-04-26T20:48
+
+User to Claude version 2026-04-26T20:48:
+Fixed most of the concerns, go through the code in detail and inspect again. List all issues sorted by priority.
