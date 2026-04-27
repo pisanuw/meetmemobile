@@ -126,6 +126,14 @@ export default function LoginScreen() {
           <Text style={styles.footer}>
             By signing in you agree to our Terms of Service.
           </Text>
+
+          <TouchableOpacity
+            onPress={() => router.push('/(auth)/create-anonymous')}
+            style={styles.anonLink}
+            testID="create-anonymous-button"
+          >
+            <Text style={styles.anonLinkText}>Create a meeting without an account</Text>
+          </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -212,5 +220,15 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.fontSizes.xs,
     color: COLORS.textMuted,
     marginTop: SPACING.xl,
+  },
+  anonLink: {
+    alignItems: 'center',
+    marginTop: SPACING.md,
+    paddingVertical: SPACING.xs,
+  },
+  anonLinkText: {
+    fontSize: TYPOGRAPHY.fontSizes.sm,
+    color: COLORS.primary,
+    fontWeight: TYPOGRAPHY.fontWeights.medium,
   },
 });

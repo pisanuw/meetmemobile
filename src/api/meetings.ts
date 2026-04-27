@@ -4,6 +4,8 @@ import {
   MeetingListItem,
   MeetingsListResponse,
   CreateMeetingPayload,
+  AnonymousCreateMeetingPayload,
+  AnonymousCreateResponse,
   AvailabilityPayload,
   FinalizePayload,
   FinalizedSlot,
@@ -191,6 +193,21 @@ export async function createMeeting(payload: CreateMeetingPayload): Promise<Pick
     invite_emails: payload.invitedEmails,
   });
   return { id: raw.meeting_id };
+}
+
+/** Create a meeting without an account. Returns tokens for sharing and admin access. */
+export async function createMeetingAnonymous(
+  payload: AnonymousCreateMeetingPayload,
+): Promise<AnonymousCreateResponse> {
+  return post<AnonymousCreateResponse>('/api/public/meetings', {
+    title: payload.title,
+    description: payload.description,
+    meeting_type: payload.scheduleMode === 'weekly' ? 'days_of_week' : 'specific_dates',
+    dates_or_days: payload.dates,
+    start_time: slotToTimeStr(payload.startSlot),
+    end_time: slotToTimeStr(payload.endSlot),
+    creator_name: payload.creatorName,
+  });
 }
 
 /** Delete a meeting (creator only). Backend uses POST .../delete, not DELETE. */

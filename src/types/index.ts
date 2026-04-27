@@ -90,6 +90,24 @@ export interface CreateMeetingPayload {
   invitedEmails: string[];
 }
 
+export interface AnonymousCreateMeetingPayload {
+  title: string;
+  description?: string;
+  scheduleMode: ScheduleMode;
+  dates: string[];
+  startSlot: number;
+  endSlot: number;
+  creatorName: string;
+}
+
+export interface AnonymousCreateResponse {
+  meeting_id: string;
+  participation_token: string;
+  admin_token: string;
+  participation_url: string;
+  admin_url: string;
+}
+
 export interface AvailabilityPayload {
   slots: TimeSlot[];
 }
