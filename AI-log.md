@@ -253,6 +253,31 @@ Once you have finished all the changes, go through the code once again to do cle
 
 ---
 
+## 2026-04-26T21:35
+
+**User:** meetmemobile github actions still failing!!!
+
+Annotations
+1 error and 1 warning
+Test (with coverage)
+failed now in 14s
+Search logs
+1s
+7s
+1s
+3s
+Run npm ci
+  npm ci
+  shell: /usr/bin/bash -e {0}
+npm error code EUSAGE
+npm error
+npm error `npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.
+npm error
+npm error Missing: @babel/preset-env@7.29.2 from lock file
+[... more missing packages ...]
+
+---
+
 ## 2026-04-26T21:31
 
 **User:** meetmemobile github actions are failing
