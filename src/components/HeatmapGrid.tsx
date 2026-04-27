@@ -53,7 +53,7 @@ const DATE_HEADER_HEIGHT = 40;
 export function HeatmapGrid({ meeting, onCellPress }: HeatmapGridProps) {
   const { dates, startSlot, endSlot, participants, scheduleMode } = meeting;
   const totalSlots = endSlot - startSlot;
-  const respondedCount = participants.filter(p => p.slots.length > 0 || p.submittedAt).length;
+  const respondedCount = participants.filter(p => p.hasResponded || p.slots.length > 0).length;
 
   const heatmap = useMemo(() => buildHeatmap(meeting), [meeting]);
   const timeLabels = useMemo(

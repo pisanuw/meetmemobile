@@ -1,37 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1777242967761" clover="3.2.0">
-  <project timestamp="1777242967761" name="All files">
-    <metrics statements="262" coveredstatements="234" conditionals="189" coveredconditionals="132" methods="92" coveredmethods="84" elements="543" coveredelements="450" complexity="0" loc="262" ncloc="262" packages="6" files="17" classes="17"/>
+<coverage generated="1777251410850" clover="3.2.0">
+  <project timestamp="1777251410850" name="All files">
+    <metrics statements="347" coveredstatements="325" conditionals="217" coveredconditionals="165" methods="112" coveredmethods="106" elements="676" coveredelements="596" complexity="0" loc="347" ncloc="347" packages="6" files="19" classes="19"/>
     <package name="src">
-      <metrics statements="22" coveredstatements="22" conditionals="12" coveredconditionals="10" methods="5" coveredmethods="5"/>
+      <metrics statements="31" coveredstatements="27" conditionals="16" coveredconditionals="14" methods="5" coveredmethods="5"/>
       <file name="config.ts" path="/Users/pisan/bitbucket/pisanuw/meet/meetmemobile/src/config.ts">
-        <metrics statements="22" coveredstatements="22" conditionals="12" coveredconditionals="10" methods="5" coveredmethods="5"/>
-        <line num="1" count="14" type="stmt"/>
-        <line num="3" count="14" type="stmt"/>
-        <line num="25" count="14" type="stmt"/>
-        <line num="43" count="14" type="stmt"/>
-        <line num="52" count="14" type="stmt"/>
-        <line num="53" count="14" type="stmt"/>
-        <line num="57" count="794" type="stmt"/>
-        <line num="58" count="794" type="stmt"/>
-        <line num="59" count="794" type="stmt"/>
-        <line num="60" count="794" type="cond" truecount="2" falsecount="0"/>
-        <line num="61" count="794" type="cond" truecount="4" falsecount="0"/>
-        <line num="62" count="794" type="stmt"/>
-        <line num="67" count="9" type="stmt"/>
-        <line num="68" count="9" type="stmt"/>
-        <line num="69" count="9" type="stmt"/>
-        <line num="70" count="9" type="stmt"/>
-        <line num="75" count="18" type="stmt"/>
-        <line num="76" count="18" type="cond" truecount="2" falsecount="2"/>
+        <metrics statements="31" coveredstatements="27" conditionals="16" coveredconditionals="14" methods="5" coveredmethods="5"/>
+        <line num="5" count="15" type="cond" truecount="2" falsecount="0"/>
+        <line num="8" count="15" type="stmt"/>
+        <line num="30" count="15" type="stmt"/>
+        <line num="48" count="15" type="stmt"/>
+        <line num="57" count="15" type="stmt"/>
+        <line num="58" count="15" type="stmt"/>
+        <line num="59" count="15" type="stmt"/>
+        <line num="63" count="794" type="stmt"/>
+        <line num="64" count="794" type="stmt"/>
+        <line num="65" count="794" type="stmt"/>
+        <line num="66" count="794" type="cond" truecount="2" falsecount="0"/>
+        <line num="67" count="794" type="cond" truecount="4" falsecount="0"/>
+        <line num="68" count="794" type="stmt"/>
+        <line num="73" count="9" type="stmt"/>
+        <line num="74" count="9" type="stmt"/>
+        <line num="75" count="9" type="stmt"/>
+        <line num="76" count="9" type="stmt"/>
         <line num="81" count="18" type="stmt"/>
-        <line num="82" count="18" type="stmt"/>
-        <line num="91" count="19" type="cond" truecount="2" falsecount="0"/>
-        <line num="92" count="16" type="stmt"/>
+        <line num="82" count="18" type="cond" truecount="1" falsecount="1"/>
+        <line num="83" count="0" type="stmt"/>
+        <line num="84" count="0" type="stmt"/>
+        <line num="86" count="18" type="stmt"/>
+        <line num="87" count="18" type="stmt"/>
+        <line num="88" count="18" type="cond" truecount="3" falsecount="1"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="90" count="0" type="stmt"/>
+        <line num="92" count="18" type="stmt"/>
+        <line num="97" count="18" type="stmt"/>
+        <line num="98" count="18" type="stmt"/>
+        <line num="107" count="19" type="cond" truecount="2" falsecount="0"/>
+        <line num="108" count="16" type="stmt"/>
       </file>
     </package>
     <package name="src.api">
-      <metrics statements="59" coveredstatements="58" conditionals="71" coveredconditionals="42" methods="30" coveredmethods="30"/>
+      <metrics statements="65" coveredstatements="62" conditionals="75" coveredconditionals="43" methods="32" coveredmethods="32"/>
       <file name="auth.ts" path="/Users/pisan/bitbucket/pisanuw/meet/meetmemobile/src/api/auth.ts">
         <metrics statements="13" coveredstatements="13" conditionals="9" coveredconditionals="7" methods="5" coveredmethods="5"/>
         <line num="21" count="2" type="stmt"/>
@@ -68,37 +77,43 @@
         <line num="80" count="1" type="stmt"/>
       </file>
       <file name="meetings.ts" path="/Users/pisan/bitbucket/pisanuw/meet/meetmemobile/src/api/meetings.ts">
-        <metrics statements="30" coveredstatements="29" conditionals="51" coveredconditionals="26" methods="19" coveredmethods="19"/>
+        <metrics statements="36" coveredstatements="33" conditionals="55" coveredconditionals="27" methods="21" coveredmethods="21"/>
         <line num="84" count="6" type="stmt"/>
-        <line num="85" count="6" type="stmt"/>
-        <line num="86" count="6" type="stmt"/>
-        <line num="87" count="6" type="stmt"/>
-        <line num="91" count="12" type="cond" truecount="2" falsecount="2"/>
-        <line num="92" count="0" type="stmt"/>
-        <line num="101" count="12" type="cond" truecount="2" falsecount="0"/>
-        <line num="105" count="6" type="stmt"/>
-        <line num="119" count="6" type="stmt"/>
-        <line num="141" count="5" type="stmt"/>
-        <line num="142" count="5" type="stmt"/>
-        <line num="143" count="5" type="cond" truecount="1" falsecount="1"/>
-        <line num="144" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="150" count="6" type="stmt"/>
-        <line num="151" count="6" type="stmt"/>
-        <line num="153" count="6" type="stmt"/>
-        <line num="154" count="12" type="stmt"/>
-        <line num="155" count="12" type="stmt"/>
-        <line num="164" count="6" type="cond" truecount="1" falsecount="1"/>
-        <line num="165" count="12" type="stmt"/>
+        <line num="85" count="6" type="cond" truecount="1" falsecount="1"/>
+        <line num="86" count="0" type="stmt"/>
+        <line num="87" count="0" type="stmt"/>
+        <line num="89" count="6" type="stmt"/>
+        <line num="90" count="6" type="stmt"/>
+        <line num="91" count="6" type="stmt"/>
+        <line num="95" count="12" type="cond" truecount="2" falsecount="2"/>
+        <line num="96" count="0" type="stmt"/>
+        <line num="105" count="12" type="cond" truecount="2" falsecount="0"/>
+        <line num="109" count="6" type="stmt"/>
+        <line num="123" count="6" type="stmt"/>
+        <line num="145" count="5" type="stmt"/>
+        <line num="146" count="5" type="stmt"/>
+        <line num="147" count="5" type="cond" truecount="1" falsecount="1"/>
+        <line num="148" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="154" count="6" type="stmt"/>
+        <line num="155" count="6" type="stmt"/>
+        <line num="158" count="6" type="stmt"/>
+        <line num="160" count="12" type="stmt"/>
+        <line num="161" count="12" type="stmt"/>
+        <line num="164" count="6" type="stmt"/>
+        <line num="165" count="12" type="cond" truecount="1" falsecount="1"/>
         <line num="166" count="12" type="stmt"/>
-        <line num="168" count="6" type="stmt"/>
-        <line num="173" count="3" type="stmt"/>
-        <line num="182" count="3" type="stmt"/>
-        <line num="187" count="1" type="stmt"/>
-        <line num="192" count="1" type="stmt"/>
-        <line num="202" count="2" type="stmt"/>
-        <line num="203" count="2" type="stmt"/>
+        <line num="175" count="6" type="cond" truecount="1" falsecount="1"/>
+        <line num="176" count="12" type="stmt"/>
+        <line num="177" count="12" type="stmt"/>
+        <line num="179" count="6" type="stmt"/>
+        <line num="184" count="3" type="stmt"/>
+        <line num="193" count="3" type="stmt"/>
+        <line num="198" count="1" type="stmt"/>
+        <line num="203" count="1" type="stmt"/>
         <line num="213" count="2" type="stmt"/>
-        <line num="223" count="1" type="stmt"/>
+        <line num="214" count="2" type="stmt"/>
+        <line num="224" count="2" type="stmt"/>
+        <line num="234" count="1" type="stmt"/>
       </file>
     </package>
     <package name="src.components">
@@ -255,7 +270,57 @@
       </file>
     </package>
     <package name="src.hooks">
-      <metrics statements="44" coveredstatements="44" conditionals="11" coveredconditionals="9" methods="15" coveredmethods="15"/>
+      <metrics statements="127" coveredstatements="125" conditionals="43" coveredconditionals="37" methods="34" coveredmethods="34"/>
+      <file name="useCreateMeetingForm.ts" path="/Users/pisan/bitbucket/pisanuw/meet/meetmemobile/src/hooks/useCreateMeetingForm.ts">
+        <metrics statements="47" coveredstatements="45" conditionals="18" coveredconditionals="17" methods="13" coveredmethods="13"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="21" count="74" type="stmt"/>
+        <line num="22" count="74" type="stmt"/>
+        <line num="23" count="74" type="stmt"/>
+        <line num="24" count="1018" type="stmt"/>
+        <line num="25" count="1018" type="stmt"/>
+        <line num="26" count="1018" type="stmt"/>
+        <line num="27" count="1018" type="stmt"/>
+        <line num="28" count="1018" type="stmt"/>
+        <line num="30" count="74" type="stmt"/>
+        <line num="34" count="73" type="stmt"/>
+        <line num="35" count="73" type="stmt"/>
+        <line num="37" count="72" type="stmt"/>
+        <line num="38" count="72" type="stmt"/>
+        <line num="39" count="72" type="stmt"/>
+        <line num="40" count="72" type="stmt"/>
+        <line num="41" count="72" type="stmt"/>
+        <line num="42" count="72" type="stmt"/>
+        <line num="43" count="72" type="stmt"/>
+        <line num="44" count="72" type="stmt"/>
+        <line num="45" count="72" type="stmt"/>
+        <line num="48" count="2" type="stmt"/>
+        <line num="49" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="54" count="10" type="stmt"/>
+        <line num="55" count="10" type="cond" truecount="2" falsecount="0"/>
+        <line num="60" count="78" type="stmt"/>
+        <line num="62" count="85" type="stmt"/>
+        <line num="67" count="1" type="stmt"/>
+        <line num="71" count="1" type="stmt"/>
+        <line num="75" count="11" type="cond" truecount="2" falsecount="0"/>
+        <line num="76" count="2" type="stmt"/>
+        <line num="77" count="2" type="stmt"/>
+        <line num="80" count="9" type="cond" truecount="2" falsecount="0"/>
+        <line num="81" count="9" type="cond" truecount="2" falsecount="0"/>
+        <line num="82" count="3" type="stmt"/>
+        <line num="88" count="3" type="stmt"/>
+        <line num="91" count="6" type="cond" truecount="1" falsecount="1"/>
+        <line num="92" count="0" type="stmt"/>
+        <line num="93" count="0" type="stmt"/>
+        <line num="96" count="6" type="stmt"/>
+        <line num="97" count="6" type="stmt"/>
+        <line num="98" count="6" type="stmt"/>
+        <line num="107" count="3" type="stmt"/>
+        <line num="109" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="111" count="6" type="stmt"/>
+        <line num="115" count="72" type="stmt"/>
+      </file>
       <file name="useDeepLinkHandler.ts" path="/Users/pisan/bitbucket/pisanuw/meet/meetmemobile/src/hooks/useDeepLinkHandler.ts">
         <metrics statements="9" coveredstatements="9" conditionals="4" coveredconditionals="4" methods="6" coveredmethods="6"/>
         <line num="18" count="7" type="stmt"/>
@@ -270,12 +335,12 @@
       </file>
       <file name="useFlash.ts" path="/Users/pisan/bitbucket/pisanuw/meet/meetmemobile/src/hooks/useFlash.ts">
         <metrics statements="6" coveredstatements="6" conditionals="1" coveredconditionals="1" methods="3" coveredmethods="3"/>
-        <line num="17" count="136" type="stmt"/>
-        <line num="19" count="134" type="cond" truecount="1" falsecount="0"/>
-        <line num="20" count="17" type="stmt"/>
-        <line num="23" count="134" type="stmt"/>
+        <line num="17" count="210" type="stmt"/>
+        <line num="19" count="208" type="cond" truecount="1" falsecount="0"/>
+        <line num="20" count="30" type="stmt"/>
+        <line num="23" count="208" type="stmt"/>
         <line num="24" count="1" type="stmt"/>
-        <line num="27" count="134" type="stmt"/>
+        <line num="27" count="208" type="stmt"/>
       </file>
       <file name="useMeeting.ts" path="/Users/pisan/bitbucket/pisanuw/meet/meetmemobile/src/hooks/useMeeting.ts">
         <metrics statements="15" coveredstatements="15" conditionals="4" coveredconditionals="3" methods="3" coveredmethods="3"/>
@@ -312,25 +377,51 @@
         <line num="31" count="3" type="stmt"/>
         <line num="34" count="12" type="stmt"/>
       </file>
+      <file name="useProfileForm.ts" path="/Users/pisan/bitbucket/pisanuw/meet/meetmemobile/src/hooks/useProfileForm.ts">
+        <metrics statements="36" coveredstatements="36" conditionals="14" coveredconditionals="11" methods="6" coveredmethods="6"/>
+        <line num="7" count="2" type="stmt"/>
+        <line num="25" count="72" type="stmt"/>
+        <line num="26" count="72" type="stmt"/>
+        <line num="28" count="71" type="cond" truecount="1" falsecount="1"/>
+        <line num="29" count="71" type="cond" truecount="1" falsecount="1"/>
+        <line num="30" count="71" type="stmt"/>
+        <line num="31" count="71" type="stmt"/>
+        <line num="33" count="71" type="stmt"/>
+        <line num="34" count="71" type="stmt"/>
+        <line num="35" count="71" type="stmt"/>
+        <line num="38" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="39" count="2" type="stmt"/>
+        <line num="40" count="2" type="stmt"/>
+        <line num="42" count="6" type="stmt"/>
+        <line num="43" count="6" type="stmt"/>
+        <line num="44" count="6" type="stmt"/>
+        <line num="45" count="3" type="stmt"/>
+        <line num="46" count="3" type="stmt"/>
+        <line num="48" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="50" count="6" type="stmt"/>
+        <line num="55" count="1" type="stmt"/>
+        <line num="57" count="1" type="stmt"/>
+        <line num="62" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="63" count="2" type="stmt"/>
+        <line num="64" count="2" type="stmt"/>
+        <line num="66" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="68" count="4" type="stmt"/>
+        <line num="69" count="4" type="stmt"/>
+        <line num="70" count="4" type="stmt"/>
+        <line num="71" count="2" type="stmt"/>
+        <line num="72" count="2" type="stmt"/>
+        <line num="74" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="76" count="4" type="stmt"/>
+        <line num="81" count="2" type="stmt"/>
+        <line num="82" count="2" type="stmt"/>
+        <line num="85" count="71" type="stmt"/>
+      </file>
     </package>
-    <package name="src.navigation">
-      <metrics statements="14" coveredstatements="0" conditionals="12" coveredconditionals="0" methods="2" coveredmethods="0"/>
-      <file name="RootNavigator.tsx" path="/Users/pisan/bitbucket/pisanuw/meet/meetmemobile/src/navigation/RootNavigator.tsx">
-        <metrics statements="14" coveredstatements="0" conditionals="12" coveredconditionals="0" methods="2" coveredmethods="0"/>
-        <line num="13" count="0" type="stmt"/>
-        <line num="14" count="0" type="stmt"/>
-        <line num="15" count="0" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="18" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="20" count="0" type="stmt"/>
-        <line num="22" count="0" type="cond" truecount="0" falsecount="4"/>
-        <line num="23" count="0" type="stmt"/>
-        <line num="24" count="0" type="cond" truecount="0" falsecount="4"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="29" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="30" count="0" type="stmt"/>
-        <line num="37" count="0" type="stmt"/>
-        <line num="45" count="0" type="stmt"/>
+    <package name="src.utils">
+      <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="validation.ts" path="/Users/pisan/bitbucket/pisanuw/meet/meetmemobile/src/utils/validation.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="3" count="106" type="stmt"/>
       </file>
     </package>
   </project>

@@ -19,8 +19,9 @@ export default function EmailSentScreen() {
 
         <Text style={styles.title}>Check your email</Text>
         <Text style={styles.body}>
-          We sent a sign-in link to{'\n'}
-          <Text style={styles.email}>{email}</Text>
+          {email
+            ? <>We sent a sign-in link to{'\n'}<Text style={styles.email}>{email}</Text></>
+            : 'We sent a sign-in link to your email address.'}
         </Text>
         <Text style={styles.hint}>
           The link expires in 15 minutes and can only be used once.

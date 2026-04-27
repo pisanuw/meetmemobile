@@ -69,7 +69,7 @@ export default function MeetingDetailScreen() {
 
   const isCreator = meeting.creatorId === user?.id;
   const isFinalized = meeting.finalized !== null;
-  const respondedCount = meeting.participants.filter(p => p.submittedAt).length;
+  const respondedCount = meeting.participants.filter(p => p.hasResponded).length;
 
   async function handleSaveAvailability() {
     setIsSaving(true);
@@ -295,13 +295,13 @@ export default function MeetingDetailScreen() {
               <View style={styles.participantInfo}>
                 <Text style={styles.participantName}>{p.name || p.email}</Text>
                 <Text style={styles.participantStatus}>
-                  {p.submittedAt ? `${p.slots.length} slots selected` : 'No response yet'}
+                  {p.hasResponded ? `${p.slots.length} slots selected` : 'No response yet'}
                 </Text>
               </View>
               <Ionicons
-                name={p.submittedAt ? 'checkmark-circle' : 'time-outline'}
+                name={p.hasResponded ? 'checkmark-circle' : 'time-outline'}
                 size={18}
-                color={p.submittedAt ? COLORS.primary : COLORS.border}
+                color={p.hasResponded ? COLORS.primary : COLORS.border}
               />
             </View>
           ))}

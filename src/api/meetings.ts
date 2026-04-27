@@ -81,7 +81,11 @@ interface RawCreateResponse {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function parseSlotString(slotStr: string): TimeSlot {
-  const idx = slotStr.indexOf('_');
+  const idx = slotStr.lastIndexOf('_');
+  if (idx === -1) {
+    console.warn(`parseSlotString: unexpected format "${slotStr}"`);
+    return { date: slotStr, slot: 0 };
+  }
   const date = slotStr.slice(0, idx);
   const time = slotStr.slice(idx + 1);
   return { date, slot: timeStrToSlot(time) };
@@ -150,14 +154,21 @@ export async function getMeeting(id: string): Promise<Meeting> {
   const response = await get<RawMeetingDetailResponse>(`/api/meetings/${id}`);
   const { meeting: raw, participants: rawParticipants, all_invites } = response;
 
-  const participants: ParticipantAvailability[] = rawParticipants.map((p, i) => {
-    const invite = all_invites?.[i];
+  // Build lookup by email so pairing is order-independent.
+  const inviteByEmail = new Map(
+    (all_invites ?? [])
+      .filter((inv): inv is RawInvite & { email: string } => !!inv.email)
+      .map(inv => [inv.email, inv]),
+  );
+
+  const participants: ParticipantAvailability[] = rawParticipants.map(p => {
+    const invite = p.email ? inviteByEmail.get(p.email) : undefined;
     return {
       userId: invite?.user_id ?? '',
       name: p.name,
-      email: invite?.email ?? p.email ?? '',
+      email: p.email ?? invite?.email ?? '',
       slots: p.slots.map(parseSlotString),
-      submittedAt: p.responded ? new Date().toISOString() : null,
+      hasResponded: p.responded,
     };
   });
 

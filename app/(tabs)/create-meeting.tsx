@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -10,113 +10,36 @@ import {
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { createMeeting } from '@/api/meetings';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { FlashMessage } from '@/components/FlashMessage';
-import { useFlash } from '@/hooks/useFlash';
-import { COLORS, SPACING, TYPOGRAPHY, slotToTime } from '@/config';
-import { ScheduleMode } from '@/types';
-
-// Backend accepts full day names only
-const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const DAY_SHORT: Record<string, string> = {
-  Monday: 'Mon', Tuesday: 'Tue', Wednesday: 'Wed', Thursday: 'Thu',
-  Friday: 'Fri', Saturday: 'Sat', Sunday: 'Sun',
-};
-
-/** Return next N dates from today as YYYY-MM-DD strings using local date to avoid UTC shift */
-function nextNDates(n: number): string[] {
-  const dates: string[] = [];
-  const d = new Date();
-  while (dates.length < n) {
-    d.setDate(d.getDate() + 1);
-    const y = d.getFullYear();
-    const mo = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    dates.push(`${y}-${mo}-${day}`);
-  }
-  return dates;
-}
+import { COLORS, SPACING, TYPOGRAPHY, SLOTS_PER_HOUR, slotToTime } from '@/config';
+import type { ScheduleMode } from '@/types';
+import {
+  useCreateMeetingForm,
+  DAYS_OF_WEEK,
+  DAY_SHORT,
+} from '@/hooks/useCreateMeetingForm';
 
 export default function CreateMeetingScreen() {
   const router = useRouter();
-  const { flash, showFlash, clearFlash } = useFlash();
-
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [scheduleMode, setScheduleMode] = useState<ScheduleMode>('specific');
-  const [selectedDates, setSelectedDates] = useState<string[]>([]);
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
-  const [startSlot, setStartSlot] = useState(32); // 8 AM
-  const [endSlot, setEndSlot] = useState(68);     // 5 PM
-  const [emailsText, setEmailsText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Candidate dates for the picker (next 14 days)
-  const candidateDates = nextNDates(14);
-
-  function toggleDate(date: string) {
-    setSelectedDates(prev =>
-      prev.includes(date) ? prev.filter(d => d !== date) : [...prev, date],
-    );
-  }
-
-  function toggleDay(day: string) {
-    setSelectedDays(prev =>
-      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day],
-    );
-  }
-
-  function parseEmails(): string[] {
-    return emailsText
-      .split(/[\n,;]+/)
-      .map(e => e.trim().toLowerCase())
-      .filter(e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
-  }
-
-  async function handleCreate() {
-    if (!title.trim()) {
-      showFlash('Please add a meeting title', 'error');
-      return;
-    }
-
-    const dates = scheduleMode === 'specific' ? selectedDates : selectedDays;
-    if (dates.length === 0) {
-      showFlash(
-        scheduleMode === 'specific'
-          ? 'Please select at least one date'
-          : 'Please select at least one day of the week',
-        'error',
-      );
-      return;
-    }
-
-    if (endSlot <= startSlot) {
-      showFlash('End time must be after start time', 'error');
-      return;
-    }
-
-    const invitedEmails = parseEmails();
-
-    setIsLoading(true);
-    try {
-      const meeting = await createMeeting({
-        title: title.trim(),
-        description: description.trim() || undefined,
-        scheduleMode,
-        dates,
-        startSlot,
-        endSlot,
-        invitedEmails,
-      });
-      router.replace(`/(tabs)/meetings/${meeting.id}`);
-    } catch (err: unknown) {
-      showFlash(err instanceof Error ? err.message : 'Failed to create meeting', 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  const {
+    title, setTitle,
+    description, setDescription,
+    scheduleMode, setScheduleMode,
+    selectedDates,
+    selectedDays,
+    startSlot, changeStartSlot,
+    endSlot, changeEndSlot,
+    emailsText, setEmailsText,
+    isLoading,
+    candidateDates,
+    parsedEmailCount,
+    toggleDate,
+    toggleDay,
+    handleCreate,
+    flash, clearFlash,
+  } = useCreateMeetingForm();
 
   const SlotPicker = ({
     label,
@@ -135,7 +58,7 @@ export default function CreateMeetingScreen() {
       <Text style={styles.slotLabel}>{label}</Text>
       <View style={styles.slotControls}>
         <TouchableOpacity
-          onPress={() => onChange(Math.max(min, value - 4))}
+          onPress={() => onChange(Math.max(min, value - SLOTS_PER_HOUR))}
           style={styles.slotButton}
           testID={`${label}-decrement`}
         >
@@ -143,7 +66,7 @@ export default function CreateMeetingScreen() {
         </TouchableOpacity>
         <Text style={styles.slotValue}>{slotToTime(value)}</Text>
         <TouchableOpacity
-          onPress={() => onChange(Math.min(max, value + 4))}
+          onPress={() => onChange(Math.min(max, value + SLOTS_PER_HOUR))}
           style={styles.slotButton}
           testID={`${label}-increment`}
         >
@@ -277,15 +200,15 @@ export default function CreateMeetingScreen() {
           <SlotPicker
             label="Start"
             value={startSlot}
-            onChange={setStartSlot}
+            onChange={changeStartSlot}
             min={0}
-            max={endSlot - 4}
+            max={endSlot - SLOTS_PER_HOUR}
           />
           <SlotPicker
             label="End"
             value={endSlot}
-            onChange={setEndSlot}
-            min={startSlot + 4}
+            onChange={changeEndSlot}
+            min={startSlot + SLOTS_PER_HOUR}
             max={95}
           />
         </Card>
@@ -311,7 +234,7 @@ export default function CreateMeetingScreen() {
           />
           {emailsText.trim().length > 0 && (
             <Text style={styles.emailCount}>
-              {parseEmails().length} valid email{parseEmails().length !== 1 ? 's' : ''}
+              {parsedEmailCount} valid email{parsedEmailCount !== 1 ? 's' : ''}
             </Text>
           )}
         </Card>

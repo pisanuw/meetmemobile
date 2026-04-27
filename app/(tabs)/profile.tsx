@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -6,95 +6,30 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useAuth } from '@/context/AuthContext';
-import { updateProfile, submitFeedback } from '@/api/auth';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { FlashMessage } from '@/components/FlashMessage';
-import { useFlash } from '@/hooks/useFlash';
 import { COLORS, SPACING, TYPOGRAPHY } from '@/config';
-
-const TIMEZONES = [
-  'America/New_York',
-  'America/Chicago',
-  'America/Denver',
-  'America/Los_Angeles',
-  'America/Anchorage',
-  'Pacific/Honolulu',
-  'Europe/London',
-  'Europe/Paris',
-  'Europe/Berlin',
-  'Asia/Tokyo',
-  'Asia/Shanghai',
-  'Asia/Kolkata',
-  'Australia/Sydney',
-  'UTC',
-];
+import { useProfileForm, TIMEZONES } from '@/hooks/useProfileForm';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { user, refreshUser, logout } = useAuth();
-  const { flash, showFlash, clearFlash } = useFlash();
-
-  const [name, setName] = useState(user?.name ?? '');
-  const [timezone, setTimezone] = useState(user?.timezone ?? 'UTC');
-  const [isSaving, setIsSaving] = useState(false);
-  const [showTzPicker, setShowTzPicker] = useState(false);
-
-  // Feedback state
-  const [feedbackText, setFeedbackText] = useState('');
-  const [feedbackType, setFeedbackType] = useState<'bug' | 'feature' | 'other'>('other');
-  const [isSendingFeedback, setIsSendingFeedback] = useState(false);
-
-  async function handleSaveProfile() {
-    if (!name.trim()) {
-      showFlash('Name cannot be empty', 'error');
-      return;
-    }
-    setIsSaving(true);
-    try {
-      await updateProfile({ name: name.trim(), timezone });
-      await refreshUser();
-      showFlash('Profile saved!', 'success');
-    } catch (err: unknown) {
-      showFlash(err instanceof Error ? err.message : 'Failed to save', 'error');
-    } finally {
-      setIsSaving(false);
-    }
-  }
-
-  function handleLogout() {
-    Alert.alert('Log Out', 'Are you sure you want to log out?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Log Out',
-        style: 'destructive',
-        onPress: () => logout(),
-      },
-    ]);
-  }
-
-  async function handleSendFeedback() {
-    if (!feedbackText.trim()) {
-      showFlash('Please enter a message', 'error');
-      return;
-    }
-    setIsSendingFeedback(true);
-    try {
-      await submitFeedback(feedbackText.trim(), feedbackType, user.email);
-      setFeedbackText('');
-      showFlash('Feedback sent — thank you!', 'success');
-    } catch (err: unknown) {
-      showFlash(err instanceof Error ? err.message : 'Failed to send feedback', 'error');
-    } finally {
-      setIsSendingFeedback(false);
-    }
-  }
+  const {
+    user,
+    name, setName,
+    timezone,
+    isSaving,
+    showTzPicker, setShowTzPicker, selectTimezone,
+    handleSaveProfile, handleLogout,
+    feedbackText, setFeedbackText,
+    feedbackType, setFeedbackType,
+    isSendingFeedback, handleSendFeedback,
+    flash, clearFlash,
+  } = useProfileForm();
 
   if (!user) return null;
 
@@ -165,10 +100,7 @@ export default function ProfileScreen() {
                 <TouchableOpacity
                   key={tz}
                   style={[styles.tzOption, timezone === tz && styles.tzOptionSelected]}
-                  onPress={() => {
-                    setTimezone(tz);
-                    setShowTzPicker(false);
-                  }}
+                  onPress={() => selectTimezone(tz)}
                   testID={`tz-option-${tz}`}
                 >
                   <Text
@@ -286,7 +218,7 @@ const styles = StyleSheet.create({
   avatarInitial: {
     fontSize: TYPOGRAPHY.fontSizes['3xl'],
     fontWeight: TYPOGRAPHY.fontWeights.bold,
-    color: '#fff',
+    color: COLORS.surface,
   },
   email: {
     fontSize: TYPOGRAPHY.fontSizes.base,

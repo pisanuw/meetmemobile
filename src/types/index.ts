@@ -14,7 +14,7 @@ export interface User {
 export type ScheduleMode = 'specific' | 'weekly';
 
 export interface TimeSlot {
-  /** ISO date string for specific mode, or "Mon", "Tue", etc. for weekly */
+  /** ISO date string (YYYY-MM-DD) for specific mode, or full day name ("Monday", "Tuesday", …) for weekly */
   date: string;
   /** 15-minute slot index within the day (0–95) */
   slot: number;
@@ -25,7 +25,8 @@ export interface ParticipantAvailability {
   name: string;
   email: string;
   slots: TimeSlot[];
-  submittedAt: string | null;
+  /** True when the backend confirms this participant has submitted a response. */
+  hasResponded: boolean;
 }
 
 export interface FinalizedSlot {

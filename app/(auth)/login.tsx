@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { sendMagicLink } from '@/api/auth';
+import { isValidEmail } from '@/utils/validation';
 import { Button } from '@/components/Button';
 import { FlashMessage } from '@/components/FlashMessage';
 import { useFlash } from '@/hooks/useFlash';
@@ -24,10 +25,10 @@ export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const { flash, showFlash, clearFlash } = useFlash();
 
-  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const emailIsValid = isValidEmail(email);
 
   async function handleSendLink() {
-    if (!isValidEmail) {
+    if (!emailIsValid) {
       showFlash('Please enter a valid email address', 'error');
       return;
     }
@@ -97,7 +98,7 @@ export default function LoginScreen() {
               title="Send Magic Link"
               onPress={handleSendLink}
               loading={isLoading}
-              disabled={!isValidEmail}
+              disabled={!emailIsValid}
               size="lg"
               style={styles.button}
               testID="send-link-button"

@@ -1,4 +1,9 @@
-export const API_BASE_URL = 'https://meetme.pisan.me';
+// Read the API base URL baked in at build time via app.config.js extra.apiBaseUrl.
+// Falls back to the production URL so the value is always a valid string.
+import Constants from 'expo-constants';
+export const API_BASE_URL: string =
+  (Constants.expoConfig?.extra?.apiBaseUrl as string | undefined) ??
+  'https://meetme.pisan.me';
 
 export const COLORS = {
   primary: '#10b981',      // emerald-500
@@ -50,7 +55,8 @@ export const SPACING = {
 } as const;
 
 export const SLOT_MINUTES = 15;
-export const SLOTS_PER_DAY = 96; // 24h × 4 slots/h
+export const SLOTS_PER_HOUR = 4;  // 60 min / 15 min
+export const SLOTS_PER_DAY = 96;  // 24h × 4 slots/h
 
 /** Convert a slot index to a human-readable time string (e.g. 32 → "8:00 AM") */
 export function slotToTime(slot: number): string {
@@ -72,8 +78,18 @@ export function slotToTimeStr(slot: number): string {
 
 /** Convert a backend HH:MM string to a slot index (e.g. "08:00" → 32) */
 export function timeStrToSlot(time: string): number {
-  const [h, m] = time.split(':').map(Number);
-  return Math.round(((h ?? 0) * 60 + (m ?? 0)) / SLOT_MINUTES);
+  const parts = time.split(':');
+  if (parts.length !== 2) {
+    console.warn(`timeStrToSlot: unexpected format "${time}"`);
+    return 0;
+  }
+  const h = Number(parts[0]);
+  const m = Number(parts[1]);
+  if (isNaN(h) || isNaN(m)) {
+    console.warn(`timeStrToSlot: non-numeric parts in "${time}"`);
+    return 0;
+  }
+  return Math.round((h * 60 + m) / SLOT_MINUTES);
 }
 
 /** Format an ISO date string to a short display (e.g. "Mon, Jan 6") */

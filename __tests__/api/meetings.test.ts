@@ -57,7 +57,7 @@ const RAW_DETAIL = {
   total_invited: 2,
   participants: [
     { name: 'Alice', slot_count: 1, responded: true, slots: ['2024-06-10_09:00'], email: 'alice@example.com' },
-    { name: 'Bob', slot_count: 0, responded: false, slots: [] },
+    { name: 'Bob', slot_count: 0, responded: false, slots: [], email: 'bob@example.com' },
   ],
   all_invites: [
     { user_id: 'u1', email: 'alice@example.com', name: 'Alice', responded: true },
