@@ -79,7 +79,7 @@ export default function MeetingCreatedScreen() {
           </View>
           <Text style={styles.hint}>
             This link lets you finalize and manage the meeting. Save it somewhere safe — you
-            won't be able to recover it.
+            won&apos;t be able to recover it.
           </Text>
           <TouchableOpacity style={styles.linkBox} onPress={handleShareAdmin} activeOpacity={0.7}>
             <Text style={styles.linkText} numberOfLines={2}>{adminUrl}</Text>

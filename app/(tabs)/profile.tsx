@@ -24,7 +24,7 @@ export default function ProfileScreen() {
     timezone,
     isSaving,
     showTzPicker, setShowTzPicker, selectTimezone,
-    handleSaveProfile, handleLogout,
+    handleSaveProfile, handleLogout, handleDeleteAccount,
     feedbackText, setFeedbackText,
     feedbackType, setFeedbackType,
     isSendingFeedback, handleSendFeedback,
@@ -174,14 +174,36 @@ export default function ProfileScreen() {
           />
         </Card>
 
-        {/* App info */}
+        {/* App info + legal links */}
         <View style={styles.appInfo}>
-          <Text style={styles.appInfoText}>MeetMe v0.1.0</Text>
+          <Text style={styles.appInfoText}>MeetMe v1.0.0</Text>
           <Text style={styles.appInfoText}>meetme.pisan.me</Text>
-          <TouchableOpacity onPress={() => router.push('/(tabs)/privacy')} testID="privacy-link">
-            <Text style={styles.privacyLink}>Privacy Policy</Text>
-          </TouchableOpacity>
+          <View style={styles.legalLinks}>
+            <TouchableOpacity onPress={() => router.push('/(tabs)/privacy')} testID="privacy-link">
+              <Text style={styles.legalLink}>Privacy Policy</Text>
+            </TouchableOpacity>
+            <Text style={styles.legalSeparator}>·</Text>
+            <TouchableOpacity onPress={() => router.push('/(tabs)/tos')} testID="tos-link">
+              <Text style={styles.legalLink}>Terms of Service</Text>
+            </TouchableOpacity>
+          </View>
         </View>
+
+        {/* Danger zone */}
+        <Card style={styles.dangerCard}>
+          <Text style={styles.dangerTitle}>Danger Zone</Text>
+          <Text style={styles.dangerHint}>
+            Deleting your account is permanent and cannot be undone. All your meetings,
+            availability data, and profile information will be removed.
+          </Text>
+          <Button
+            title="Delete Account"
+            variant="outline"
+            onPress={handleDeleteAccount}
+            style={styles.deleteButton}
+            testID="delete-account-button"
+          />
+        </Card>
       </ScrollView>
     </SafeAreaView>
   );
@@ -320,5 +342,11 @@ const styles = StyleSheet.create({
   feedbackTypeTextActive: { color: COLORS.primaryDark },
   appInfo: { alignItems: 'center', gap: 4, paddingVertical: SPACING.sm },
   appInfoText: { fontSize: TYPOGRAPHY.fontSizes.xs, color: COLORS.textMuted },
-  privacyLink: { fontSize: TYPOGRAPHY.fontSizes.xs, color: COLORS.primary, textDecorationLine: 'underline' },
+  legalLinks: { flexDirection: 'row', alignItems: 'center', gap: SPACING.xs },
+  legalLink: { fontSize: TYPOGRAPHY.fontSizes.xs, color: COLORS.primary, textDecorationLine: 'underline' },
+  legalSeparator: { fontSize: TYPOGRAPHY.fontSizes.xs, color: COLORS.textMuted },
+  dangerCard: { borderColor: COLORS.error, borderWidth: 1, gap: SPACING.xs },
+  dangerTitle: { fontSize: TYPOGRAPHY.fontSizes.sm, fontWeight: TYPOGRAPHY.fontWeights.semibold, color: COLORS.error },
+  dangerHint: { fontSize: TYPOGRAPHY.fontSizes.xs, color: COLORS.textMuted, lineHeight: 18 },
+  deleteButton: { marginTop: SPACING.xs, borderColor: COLORS.error },
 });

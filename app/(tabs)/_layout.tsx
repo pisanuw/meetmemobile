@@ -70,6 +70,7 @@ export default function TabsLayout() {
       {/* Hide these routes from the tab bar */}
       <Tabs.Screen name="meetings/[id]" options={{ href: null }} />
       <Tabs.Screen name="privacy" options={{ href: null }} />
+      <Tabs.Screen name="tos" options={{ href: null }} />
     </Tabs>
   );
 }

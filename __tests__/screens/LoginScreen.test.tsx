@@ -1,10 +1,21 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react-native';
 import LoginScreen from '@/app/(auth)/login';
 
 // Mock API
 jest.mock('@/api/auth', () => ({
   sendMagicLink: jest.fn(),
+}));
+
+// Mock expo-web-browser — must use jest.fn() inside factory (mock is hoisted before variables)
+jest.mock('expo-web-browser', () => ({
+  openAuthSessionAsync: jest.fn(),
+}));
+
+// Mock AuthContext
+const mockOnAuthSuccess = jest.fn();
+jest.mock('@/context/AuthContext', () => ({
+  useAuth: () => ({ onAuthSuccess: mockOnAuthSuccess }),
 }));
 
 // Mock router
@@ -15,7 +26,10 @@ jest.mock('expo-router', () => ({
 }));
 
 import * as authApi from '@/api/auth';
+import * as WebBrowser from 'expo-web-browser';
+
 const mockSendMagicLink = authApi.sendMagicLink as jest.Mock;
+const mockOpenAuthSession = WebBrowser.openAuthSessionAsync as jest.Mock;
 
 afterEach(() => {
   jest.resetAllMocks();
@@ -81,12 +95,38 @@ describe('LoginScreen', () => {
     });
   });
 
-  it('navigates to webview-auth with mode=google on Google button press', () => {
+  it('opens ASWebAuthenticationSession on Google button press', async () => {
+    mockOpenAuthSession.mockResolvedValue({ type: 'success', url: 'meetme://auth/google/done' });
+    mockOnAuthSuccess.mockResolvedValue(undefined);
     render(<LoginScreen />);
-    fireEvent.press(screen.getByTestId('google-signin-button'));
-    expect(mockPush).toHaveBeenCalledWith(
-      expect.objectContaining({ params: expect.objectContaining({ mode: 'google' }) }),
-    );
+
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('google-signin-button'));
+      await Promise.resolve();
+    });
+
+    await waitFor(() => {
+      expect(mockOpenAuthSession).toHaveBeenCalledWith(
+        expect.stringContaining('/api/auth/google/start?mobile=1'),
+        'meetme://',
+      );
+    });
+    expect(mockOnAuthSuccess).toHaveBeenCalled();
+  });
+
+  it('does not call onAuthSuccess when Google auth is cancelled', async () => {
+    mockOpenAuthSession.mockResolvedValue({ type: 'cancel' });
+    render(<LoginScreen />);
+
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('google-signin-button'));
+      await Promise.resolve();
+    });
+
+    await waitFor(() => {
+      expect(mockOpenAuthSession).toHaveBeenCalled();
+    });
+    expect(mockOnAuthSuccess).not.toHaveBeenCalled();
   });
 
   it('trims and lowercases email before sending', async () => {

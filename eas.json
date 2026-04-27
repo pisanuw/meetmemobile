@@ -28,9 +28,9 @@
   "submit": {
     "production": {
       "ios": {
-        "appleId": "REPLACE_WITH_APPLE_ID",
+        "appleId": "yusufappleus@pisan.me",
         "ascAppId": "REPLACE_WITH_APP_STORE_CONNECT_APP_ID",
-        "appleTeamId": "REPLACE_WITH_APPLE_TEAM_ID"
+        "appleTeamId": "GY4TW98N7A"
       }
     }
   }

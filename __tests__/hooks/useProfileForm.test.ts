@@ -21,18 +21,17 @@ jest.mock('@/context/AuthContext', () => ({
 jest.mock('@/api/auth', () => ({
   updateProfile: jest.fn(),
   submitFeedback: jest.fn(),
+  deleteAccount: jest.fn(),
 }));
 
-// Alert is mocked in RN test env — just call the onPress handler directly in tests
-jest.mock('react-native/Libraries/Alert/Alert', () => ({
-  alert: jest.fn((_title, _msg, buttons) => {
-    // Simulate the "Log Out" button press by finding and calling the destructive action
-    const logoutBtn = (buttons ?? []).find(
-      (b: { style?: string }) => b.style === 'destructive',
-    );
-    logoutBtn?.onPress?.();
-  }),
-}));
+// Alert is exported as .default from the internal path — wrap accordingly
+jest.mock('react-native/Libraries/Alert/Alert', () => {
+  const alertFn = jest.fn((_title: string, _msg: string, buttons?: Array<{ style?: string; onPress?: () => void }>) => {
+    const destructiveBtn = (buttons ?? []).find((b) => b.style === 'destructive');
+    destructiveBtn?.onPress?.();
+  });
+  return { default: { alert: alertFn } };
+});
 
 import { useProfileForm, TIMEZONES } from '@/hooks/useProfileForm';
 import * as authApi from '@/api/auth';

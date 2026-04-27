@@ -253,6 +253,30 @@ Once you have finished all the changes, go through the code once again to do cle
 
 ---
 
+## 2026-04-27T09:46
+
+**User:** 1. Create a delete account for meetmemobile and meetme
+2. Write a Terms of Service document and include it
+3. When I ran eas init I got
+$ eas init
+✔ Project already linked (ID: 00000000-0000-0000-0000-000000000000). To re-configure, remove the "extra.eas.projectId" field from your app config.
+Experience with id '00000000-0000-0000-0000-000000000000' does not exist.
+Request ID: 3f486388-6c95-4394-8fb7-2610955a87e5
+    Error: GraphQL request failed.
+4. My apple information
+Email and Username: yusufappleus@pisan.me
+Team ID: GY4TW98N7A
+
+What is next?
+
+---
+
+## 2026-04-27T09:38
+
+**User:** Is meetmemobile ready to be sent to iOS app store? Walk me through what more needs to be done
+
+---
+
 ## 2026-04-26T21:35
 
 **User:** meetmemobile github actions still failing!!!
@@ -310,3 +334,34 @@ P3 — Minor / polish
 
 User to Claude version 2026-04-26T20:48:
 Fixed most of the concerns, go through the code in detail and inspect again. List all issues sorted by priority.
+
+## 2026-04-27T09:54
+
+User to Claude version 2026-04-27T09:54:
+I get "Error 403: disallowed_useragent" when trying to use Google Login when testing the app via Expo on the mobile phone. Fix or tell me how to fix this after you have finished other work
+
+## 2026-04-27T10:03
+
+User to Claude version 2026-04-27T10:03:
+help me with "App Store Connect setup (no code, just admin work)"
+
+## 2026-04-27T10:03
+
+User to Claude version 2026-04-27T10:03:
+Help me with "Register an App ID"
+What should be 
+Description
+Bundle ID
+
+What capabilities need to be enabled
+
+## 2026-04-27T10:09
+
+User to Claude version 2026-04-27T10:09:
+I changed bundle id to be "me.pisan.meetme" 
+Change code as necessary
+
+## 2026-04-27T10:12
+
+User to Claude version 2026-04-27T10:12:
+Put the privacy policy at https://meetme.pisan.me/privacy.html

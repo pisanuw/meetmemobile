@@ -12,17 +12,21 @@ import {
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import * as WebBrowser from 'expo-web-browser';
 import { sendMagicLink } from '@/api/auth';
 import { isValidEmail } from '@/utils/validation';
 import { Button } from '@/components/Button';
 import { FlashMessage } from '@/components/FlashMessage';
 import { useFlash } from '@/hooks/useFlash';
-import { COLORS, SPACING, TYPOGRAPHY } from '@/config';
+import { useAuth } from '@/context/AuthContext';
+import { COLORS, SPACING, TYPOGRAPHY, API_BASE_URL } from '@/config';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { onAuthSuccess } = useAuth();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const { flash, showFlash, clearFlash } = useFlash();
 
   const emailIsValid = isValidEmail(email);
@@ -44,9 +48,24 @@ export default function LoginScreen() {
     }
   }
 
-  function handleGoogleSignIn() {
-    // Navigate to WebView screen that loads Google OAuth
-    router.push({ pathname: '/(auth)/webview-auth', params: { mode: 'google' } });
+  async function handleGoogleSignIn() {
+    setIsGoogleLoading(true);
+    try {
+      // ASWebAuthenticationSession (real Safari) — Google allows this, unlike embedded WebViews.
+      // The backend sets the token cookie normally; iOS shares it with native fetch via URLSession.
+      const result = await WebBrowser.openAuthSessionAsync(
+        `${API_BASE_URL}/api/auth/google/start?mobile=1`,
+        'meetme://',
+      );
+      if (result.type === 'success') {
+        await onAuthSuccess();
+        // _layout.tsx redirects to (tabs) once isAuthenticated flips
+      }
+    } catch {
+      showFlash('Google sign-in failed. Please try again.', 'error');
+    } finally {
+      setIsGoogleLoading(false);
+    }
   }
 
   return (
@@ -114,17 +133,36 @@ export default function LoginScreen() {
 
           {/* Google OAuth */}
           <TouchableOpacity
-            style={styles.googleButton}
+            style={[styles.googleButton, isGoogleLoading && { opacity: 0.6 }]}
             onPress={handleGoogleSignIn}
             activeOpacity={0.8}
+            disabled={isGoogleLoading}
             testID="google-signin-button"
           >
             <Ionicons name="logo-google" size={20} color="#4285f4" />
-            <Text style={styles.googleButtonText}>Continue with Google</Text>
+            <Text style={styles.googleButtonText}>
+              {isGoogleLoading ? 'Opening Google…' : 'Continue with Google'}
+            </Text>
           </TouchableOpacity>
 
           <Text style={styles.footer}>
-            By signing in you agree to our Terms of Service.
+            By signing in you agree to our{' '}
+            <Text
+              style={styles.footerLink}
+              onPress={() => router.push('/(tabs)/tos')}
+              testID="tos-link"
+            >
+              Terms of Service
+            </Text>
+            {' '}and{' '}
+            <Text
+              style={styles.footerLink}
+              onPress={() => router.push('/(tabs)/privacy')}
+              testID="privacy-link"
+            >
+              Privacy Policy
+            </Text>
+            .
           </Text>
 
           <TouchableOpacity
@@ -220,6 +258,10 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.fontSizes.xs,
     color: COLORS.textMuted,
     marginTop: SPACING.xl,
+  },
+  footerLink: {
+    color: COLORS.primary,
+    textDecorationLine: 'underline',
   },
   anonLink: {
     alignItems: 'center',

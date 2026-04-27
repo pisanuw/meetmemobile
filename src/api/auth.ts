@@ -65,6 +65,15 @@ export async function updateProfile(payload: ProfileUpdatePayload): Promise<void
 }
 
 /**
+ * Permanently delete the authenticated user's account (App Store 5.1.1).
+ * The server also clears the session cookie, so the client should call
+ * logout() locally after this resolves.
+ */
+export async function deleteAccount(): Promise<void> {
+  return post<void>('/api/auth/account/delete');
+}
+
+/**
  * Submit user feedback.
  * Backend requires the sender's email in the body (no auth check on this endpoint).
  */

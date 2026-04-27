@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Alert } from 'react-native';
-import { updateProfile, submitFeedback } from '@/api/auth';
+import { updateProfile, submitFeedback, deleteAccount } from '@/api/auth';
 import { useAuth } from '@/context/AuthContext';
 import { useFlash } from '@/hooks/useFlash';
 
@@ -58,6 +58,28 @@ export function useProfileForm() {
     ]);
   }
 
+  function handleDeleteAccount() {
+    Alert.alert(
+      'Delete Account',
+      'This will permanently delete your account and all your data. This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete Account',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteAccount();
+              logout();
+            } catch (err: unknown) {
+              showFlash(err instanceof Error ? err.message : 'Failed to delete account', 'error');
+            }
+          },
+        },
+      ]
+    );
+  }
+
   async function handleSendFeedback() {
     if (!feedbackText.trim()) {
       showFlash('Please enter a message', 'error');
@@ -93,6 +115,7 @@ export function useProfileForm() {
     selectTimezone,
     handleSaveProfile,
     handleLogout,
+    handleDeleteAccount,
     // Feedback fields
     feedbackText, setFeedbackText,
     feedbackType, setFeedbackType,
