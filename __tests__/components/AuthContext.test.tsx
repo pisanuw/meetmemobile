@@ -1,7 +1,5 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react-native';
-import { Text } from 'react-native';
-import { render, screen } from '@testing-library/react-native';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 
 // Mock API module
@@ -18,10 +16,7 @@ const MOCK_USER = {
   id: 'u1',
   email: 'alice@example.com',
   name: 'Alice',
-  timezone: 'UTC',
-  hasGoogleCalendar: false,
   isAdmin: false,
-  createdAt: '2024-01-01T00:00:00Z',
 };
 
 function wrapper({ children }: { children: React.ReactNode }) {
@@ -62,7 +57,8 @@ describe('AuthContext', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    it('sets user to null when getMe throws', async () => {
+    it('sets user to null and finishes loading when getMe throws during bootstrap', async () => {
+      // Bootstrap silently swallows errors to avoid blocking app startup
       mockGetMe.mockRejectedValue(new Error('Network failure'));
       const { result } = renderHook(() => useAuth(), { wrapper });
       await act(async () => {});
@@ -107,8 +103,8 @@ describe('AuthContext', () => {
   describe('refreshUser()', () => {
     it('re-fetches user and updates state', async () => {
       mockGetMe
-        .mockResolvedValueOnce(MOCK_USER)         // initial bootstrap
-        .mockResolvedValueOnce({ ...MOCK_USER, name: 'Alice B.' }); // refresh
+        .mockResolvedValueOnce(MOCK_USER)
+        .mockResolvedValueOnce({ ...MOCK_USER, name: 'Alice B.' });
 
       const { result } = renderHook(() => useAuth(), { wrapper });
       await act(async () => {});
@@ -120,13 +116,32 @@ describe('AuthContext', () => {
 
       expect(result.current.user?.name).toBe('Alice B.');
     });
+
+    it('does NOT clear user on transient network error (P2 fix)', async () => {
+      // refreshUser() should throw to callers rather than silently logging out.
+      mockGetMe
+        .mockResolvedValueOnce(MOCK_USER)       // bootstrap succeeds
+        .mockRejectedValueOnce(new Error('500 Server Error')); // refresh fails
+
+      const { result } = renderHook(() => useAuth(), { wrapper });
+      await act(async () => {});
+      expect(result.current.isAuthenticated).toBe(true);
+
+      await act(async () => {
+        await expect(result.current.refreshUser()).rejects.toThrow('500 Server Error');
+      });
+
+      // User should still be logged in — transient server error must not log them out
+      expect(result.current.isAuthenticated).toBe(true);
+      expect(result.current.user).toEqual(MOCK_USER);
+    });
   });
 
   describe('onAuthSuccess()', () => {
     it('re-fetches user after successful auth', async () => {
       mockGetMe
-        .mockResolvedValueOnce(null)       // initial: not authenticated
-        .mockResolvedValueOnce(MOCK_USER); // after auth: user returned
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(MOCK_USER);
 
       const { result } = renderHook(() => useAuth(), { wrapper });
       await act(async () => {});

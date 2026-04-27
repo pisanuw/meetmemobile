@@ -16,7 +16,7 @@ import { sendMagicLink } from '@/api/auth';
 import { Button } from '@/components/Button';
 import { FlashMessage } from '@/components/FlashMessage';
 import { useFlash } from '@/hooks/useFlash';
-import { COLORS, SPACING, TYPOGRAPHY, API_BASE_URL } from '@/config';
+import { COLORS, SPACING, TYPOGRAPHY } from '@/config';
 
 export default function LoginScreen() {
   const router = useRouter();

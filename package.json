@@ -9,7 +9,7 @@
     "test": "jest --watchAll=false",
     "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage --watchAll=false",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src app __tests__ --ext .ts,.tsx",
     "type-check": "tsc --noEmit",
     "build:ios": "eas build --platform ios",
     "submit:ios": "eas submit --platform ios"
@@ -37,6 +37,7 @@
     "@babel/core": "^7.24.0",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^12.5.0",
+    "@types/jest": "^30.0.0",
     "@types/react": "~18.2.79",
     "@types/react-native": "~0.73.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",

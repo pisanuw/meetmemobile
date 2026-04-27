@@ -50,17 +50,17 @@ describe('CreateMeetingScreen', () => {
   it('toggles schedule mode between specific and weekly', () => {
     render(<CreateMeetingScreen />);
     fireEvent.press(screen.getByTestId('mode-weekly'));
-    // Should now show day chips
-    expect(screen.getByTestId('day-chip-Mon')).toBeTruthy();
+    // Should now show day chips (full names used as testIDs)
+    expect(screen.getByTestId('day-chip-Monday')).toBeTruthy();
     fireEvent.press(screen.getByTestId('mode-specific'));
     // Should show date chips again
-    expect(screen.queryByTestId('day-chip-Mon')).toBeNull();
+    expect(screen.queryByTestId('day-chip-Monday')).toBeNull();
   });
 
   it('selects and deselects days in weekly mode', () => {
     render(<CreateMeetingScreen />);
     fireEvent.press(screen.getByTestId('mode-weekly'));
-    const monChip = screen.getByTestId('day-chip-Mon');
+    const monChip = screen.getByTestId('day-chip-Monday');
     fireEvent.press(monChip);
     fireEvent.press(monChip); // deselect
     // no crash = pass
@@ -73,9 +73,9 @@ describe('CreateMeetingScreen', () => {
     render(<CreateMeetingScreen />);
     fireEvent.changeText(screen.getByTestId('title-input'), 'Test Meeting');
 
-    // Switch to weekly mode and select Mon
+    // Switch to weekly mode and select Monday
     fireEvent.press(screen.getByTestId('mode-weekly'));
-    fireEvent.press(screen.getByTestId('day-chip-Mon'));
+    fireEvent.press(screen.getByTestId('day-chip-Monday'));
 
     fireEvent.press(screen.getByTestId('create-button'));
 
@@ -84,7 +84,7 @@ describe('CreateMeetingScreen', () => {
         expect.objectContaining({
           title: 'Test Meeting',
           scheduleMode: 'weekly',
-          dates: ['Mon'],
+          dates: ['Monday'],
         }),
       );
       expect(mockReplace).toHaveBeenCalledWith('/(tabs)/meetings/new-123');
@@ -97,7 +97,7 @@ describe('CreateMeetingScreen', () => {
     render(<CreateMeetingScreen />);
     fireEvent.changeText(screen.getByTestId('title-input'), 'Test');
     fireEvent.press(screen.getByTestId('mode-weekly'));
-    fireEvent.press(screen.getByTestId('day-chip-Tue'));
+    fireEvent.press(screen.getByTestId('day-chip-Tuesday'));
     fireEvent.press(screen.getByTestId('create-button'));
 
     await waitFor(() => {
@@ -111,7 +111,7 @@ describe('CreateMeetingScreen', () => {
     render(<CreateMeetingScreen />);
     fireEvent.changeText(screen.getByTestId('title-input'), 'Test');
     fireEvent.press(screen.getByTestId('mode-weekly'));
-    fireEvent.press(screen.getByTestId('day-chip-Mon'));
+    fireEvent.press(screen.getByTestId('day-chip-Monday'));
     fireEvent.changeText(
       screen.getByTestId('emails-input'),
       'alice@example.com\nbob@example.com',

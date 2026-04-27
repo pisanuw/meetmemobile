@@ -62,6 +62,20 @@ export function slotToTime(slot: number): string {
   return `${displayHour}:${minutes.toString().padStart(2, '0')} ${period}`;
 }
 
+/** Convert a slot index to a 24-hour HH:MM string for backend payloads (e.g. 32 → "08:00") */
+export function slotToTimeStr(slot: number): string {
+  const totalMinutes = slot * SLOT_MINUTES;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+}
+
+/** Convert a backend HH:MM string to a slot index (e.g. "08:00" → 32) */
+export function timeStrToSlot(time: string): number {
+  const [h, m] = time.split(':').map(Number);
+  return Math.round(((h ?? 0) * 60 + (m ?? 0)) / SLOT_MINUTES);
+}
+
 /** Format an ISO date string to a short display (e.g. "Mon, Jan 6") */
 export function formatDate(isoDate: string): string {
   const d = new Date(isoDate + 'T00:00:00');

@@ -33,12 +33,17 @@ export default function WebViewAuthScreen() {
 
   const startUrl =
     mode === 'google'
-      ? `${API_BASE_URL}/api/auth/google`
+      ? `${API_BASE_URL}/api/auth/google/start`
       : deepLinkUrl ?? `${API_BASE_URL}/`;
 
   async function handleNavigationChange(nav: WebViewNavigation) {
-    // Detect successful auth by landing on the dashboard
-    if (nav.url.includes('/dashboard.html') || nav.url.endsWith('/dashboard')) {
+    // Backend redirects returning users to /dashboard.html and new/incomplete
+    // users to /profile.html?setup=1 — both indicate successful auth.
+    if (
+      nav.url.includes('/dashboard.html') ||
+      nav.url.endsWith('/dashboard') ||
+      nav.url.includes('/profile.html')
+    ) {
       await onAuthSuccess();
       // RootNavigator will automatically redirect to (tabs) when isAuthenticated flips
     }

@@ -42,15 +42,17 @@ export default function MeetingDetailScreen() {
   const [finalizeDuration, setFinalizeDuration] = useState(60);
   const [finalizeNote, setFinalizeNote] = useState('');
   const [isFinalizing, setIsFinalizing] = useState(false);
-  const [slotsInitialized, setSlotsInitialized] = useState(false);
+  // Track which meeting id we last seeded slots for, so we re-seed when
+  // navigating between different meetings (prevents stale slot state).
+  const [slotsMeetingId, setSlotsMeetingId] = useState<string | null>(null);
 
   React.useEffect(() => {
-    if (meeting && user && !slotsInitialized) {
+    if (meeting && user && meeting.id !== slotsMeetingId) {
       const myParticipant = meeting.participants.find(p => p.userId === user.id);
-      if (myParticipant) setMySlots(myParticipant.slots);
-      setSlotsInitialized(true);
+      setMySlots(myParticipant?.slots ?? []);
+      setSlotsMeetingId(meeting.id);
     }
-  }, [meeting, user, slotsInitialized]);
+  }, [meeting, user, slotsMeetingId]);
 
   if (isLoading) return <LoadingScreen message="Loading meeting..." />;
   if (error || !meeting) {
@@ -74,6 +76,8 @@ export default function MeetingDetailScreen() {
     try {
       await submitAvailability(meeting.id, { slots: mySlots });
       showFlash('Availability saved!', 'success');
+      // Reset seed ID so the refreshed participant data re-seeds mySlots
+      setSlotsMeetingId(null);
       await refresh();
     } catch (err: unknown) {
       showFlash(err instanceof Error ? err.message : 'Failed to save', 'error');

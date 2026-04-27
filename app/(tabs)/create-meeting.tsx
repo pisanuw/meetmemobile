@@ -6,8 +6,6 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Switch,
-  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,15 +18,23 @@ import { useFlash } from '@/hooks/useFlash';
 import { COLORS, SPACING, TYPOGRAPHY, slotToTime } from '@/config';
 import { ScheduleMode } from '@/types';
 
-const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+// Backend accepts full day names only
+const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const DAY_SHORT: Record<string, string> = {
+  Monday: 'Mon', Tuesday: 'Tue', Wednesday: 'Wed', Thursday: 'Thu',
+  Friday: 'Fri', Saturday: 'Sat', Sunday: 'Sun',
+};
 
-/** Return next N dates from today as ISO strings */
+/** Return next N dates from today as YYYY-MM-DD strings using local date to avoid UTC shift */
 function nextNDates(n: number): string[] {
   const dates: string[] = [];
   const d = new Date();
   while (dates.length < n) {
     d.setDate(d.getDate() + 1);
-    dates.push(d.toISOString().slice(0, 10));
+    const y = d.getFullYear();
+    const mo = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    dates.push(`${y}-${mo}-${day}`);
   }
   return dates;
 }
@@ -257,7 +263,7 @@ export default function CreateMeetingScreen() {
                       <Text
                         style={[styles.dateChipText, isSelected && styles.dateChipTextSelected]}
                       >
-                        {day}
+                        {DAY_SHORT[day]}
                       </Text>
                     </TouchableOpacity>
                   );

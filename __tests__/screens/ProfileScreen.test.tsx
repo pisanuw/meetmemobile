@@ -23,37 +23,7 @@ jest.mock('@/api/auth', () => ({
   submitFeedback: jest.fn(),
 }));
 
-// Prevent FlashMessage's Animated.timing from leaking across test renders
-jest.mock('@/components/FlashMessage', () => ({
-  FlashMessage: ({ message }: { message: string }) => {
-    const { Text } = require('react-native');
-    return <Text>{message}</Text>;
-  },
-}));
-
-// Prevent Button's ActivityIndicator (Animated) from leaking across test renders
-jest.mock('@/components/Button', () => ({
-  Button: ({ title, onPress, testID, disabled, loading }: {
-    title: string;
-    onPress: () => void;
-    testID?: string;
-    disabled?: boolean;
-    loading?: boolean;
-  }) => {
-    const { TouchableOpacity, Text } = require('react-native');
-    return (
-      <TouchableOpacity
-        onPress={onPress}
-        testID={testID}
-        disabled={disabled || loading}
-        accessibilityRole="button"
-        accessibilityState={{ disabled: !!(disabled || loading) }}
-      >
-        {!loading && <Text>{title}</Text>}
-      </TouchableOpacity>
-    );
-  },
-}));
+// FlashMessage and Button are mocked globally in jest.setup.ts
 
 jest.mock('expo-router', () => ({
   useRouter: () => ({ back: jest.fn(), push: jest.fn() }),
@@ -151,8 +121,8 @@ describe('ProfileScreen', () => {
     fireEvent.press(screen.getByTestId('send-feedback-button'));
 
     await waitFor(() => {
-      // Default feedbackType is 'other'
-      expect(mockSubmitFeedback).toHaveBeenCalledWith('Great app!', 'other');
+      // Default feedbackType is 'other'; user email is alice@example.com from mock
+      expect(mockSubmitFeedback).toHaveBeenCalledWith('Great app!', 'other', 'alice@example.com');
       expect(screen.getByText('Feedback sent — thank you!')).toBeTruthy();
     });
   });

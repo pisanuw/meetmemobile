@@ -27,19 +27,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const me = await getMe();
       setUser(me);
-    } catch {
-      setUser(null);
+    } catch (err: unknown) {
+      // getMe() returns null on 401 — if we get here it's a network/server error.
+      // Don't clear an existing session for transient failures; leave user logged in.
+      // The error will surface to callers (e.g. profile save) which handle it.
+      throw err;
     }
   }, []);
 
-  // Bootstrap: check if we have an active session on mount
+  // Bootstrap: check if we have an active session on mount.
+  // Unlike the exported refreshUser, we silently ignore errors here so a
+  // transient network failure at startup doesn't prevent the app from opening.
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      await refreshUser();
-      setIsLoading(false);
+      try {
+        const me = await getMe();
+        setUser(me);
+      } catch {
+        // Network/server error at boot — stay logged-out rather than crashing.
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
     })();
-  }, [refreshUser]);
+  }, []);
 
   const logout = useCallback(async () => {
     try {

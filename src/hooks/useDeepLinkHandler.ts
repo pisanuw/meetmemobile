@@ -1,12 +1,13 @@
 /**
  * Deep Link Handler
  *
- * When a user taps a magic link (e.g. https://meetme.pisan.me/api/auth/magic?token=...)
+ * When a user taps a magic link
+ * (e.g. https://meetme.pisan.me/api/auth/magic-link/verify?token=...)
  * iOS opens the app via the associated domain. This hook intercepts that URL and
  * navigates to the WebViewAuthScreen so the token can be exchanged in the same
  * cookie-aware environment.
  *
- * Set up in _layout.tsx via useDeepLinkHandler().
+ * Mounted in _layout.tsx via useDeepLinkHandler().
  */
 
 import { useEffect } from 'react';
@@ -32,8 +33,8 @@ export function useDeepLinkHandler() {
 }
 
 function handleUrl(url: string, router: ReturnType<typeof import('expo-router').useRouter>) {
-  // Magic link pattern: .../api/auth/magic?token=...
-  if (url.includes('/api/auth/magic') || url.includes('/api/auth/verify')) {
+  // Magic link pattern: .../api/auth/magic-link/verify?token=...
+  if (url.includes('/api/auth/magic-link/verify')) {
     router.push({
       pathname: '/(auth)/webview-auth',
       params: { mode: 'magic', url },

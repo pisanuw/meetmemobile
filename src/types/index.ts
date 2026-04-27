@@ -4,10 +4,9 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  timezone: string;
-  hasGoogleCalendar: boolean;
+  /** Only present after the user completes profile setup; defaults to 'UTC' in UI */
+  timezone?: string;
   isAdmin: boolean;
-  createdAt: string;
 }
 
 // ─── Meetings ─────────────────────────────────────────────────────────────────

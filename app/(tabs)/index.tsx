@@ -2,7 +2,7 @@ import React from 'react';
 import {
   View,
   Text,
-  FlatList,
+  ScrollView,
   RefreshControl,
   StyleSheet,
   TouchableOpacity,
@@ -69,7 +69,7 @@ export default function DashboardScreen() {
         </View>
       )}
 
-      <FlatList
+      <ScrollView
         contentContainerStyle={styles.list}
         refreshControl={
           <RefreshControl
@@ -78,43 +78,38 @@ export default function DashboardScreen() {
             tintColor={COLORS.primary}
           />
         }
-        data={[]}
-        renderItem={null}
-        ListHeaderComponent={
-          <>
-            {/* My Meetings */}
-            <Text style={styles.sectionTitle}>Meetings I Created</Text>
-            {myMeetings.length === 0 ? (
-              <EmptyState message="No meetings yet. Tap + to create one." />
-            ) : (
-              myMeetings.map((m: MeetingListItem) => (
-                <MeetingCard
-                  key={m.id}
-                  meeting={m}
-                  onPress={() => handleMeetingPress(m.id)}
-                />
-              ))
-            )}
-
-            {/* Invited Meetings */}
-            <Text style={[styles.sectionTitle, { marginTop: SPACING.lg }]}>
-              Meetings I'm Invited To
-            </Text>
-            {invitedMeetings.length === 0 ? (
-              <EmptyState message="No invitations yet." />
-            ) : (
-              invitedMeetings.map((m: MeetingListItem) => (
-                <MeetingCard
-                  key={m.id}
-                  meeting={m}
-                  onPress={() => handleMeetingPress(m.id)}
-                />
-              ))
-            )}
-          </>
-        }
         testID="dashboard-list"
-      />
+      >
+        {/* My Meetings */}
+        <Text style={styles.sectionTitle}>Meetings I Created</Text>
+        {myMeetings.length === 0 ? (
+          <EmptyState message="No meetings yet. Tap + to create one." />
+        ) : (
+          myMeetings.map((m: MeetingListItem) => (
+            <MeetingCard
+              key={m.id}
+              meeting={m}
+              onPress={() => handleMeetingPress(m.id)}
+            />
+          ))
+        )}
+
+        {/* Invited Meetings */}
+        <Text style={[styles.sectionTitle, { marginTop: SPACING.lg }]}>
+          Meetings I'm Invited To
+        </Text>
+        {invitedMeetings.length === 0 ? (
+          <EmptyState message="No invitations yet." />
+        ) : (
+          invitedMeetings.map((m: MeetingListItem) => (
+            <MeetingCard
+              key={m.id}
+              meeting={m}
+              onPress={() => handleMeetingPress(m.id)}
+            />
+          ))
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }

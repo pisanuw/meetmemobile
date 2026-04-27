@@ -44,6 +44,20 @@ jest.mock('@expo/vector-icons', () => {
   };
 });
 
+// Mock LoadingScreen globally — ActivityIndicator is an Animated component
+// that fires async updates and causes act(...) warnings.
+jest.mock('@/components/LoadingScreen', () => ({
+  LoadingScreen: ({ message }: { message?: string }) => {
+    const React = require('react');
+    const { View, Text } = require('react-native');
+    return React.createElement(
+      View,
+      { testID: 'loading-screen' },
+      message ? React.createElement(Text, null, message) : null,
+    );
+  },
+}));
+
 // Mock react-native-safe-area-context (SafeAreaView uses Animated internally which
 // can leak state between tests; use a plain View wrapper instead)
 jest.mock('react-native-safe-area-context', () => {
@@ -64,20 +78,74 @@ jest.mock('expo-linking', () => ({
   getInitialURL: jest.fn(() => Promise.resolve(null)),
 }));
 
-// Silence console.error in tests (keeps output clean)
+// Mock FlashMessage globally — it uses Animated.timing which fires async state
+// updates after tests complete and causes noisy act(...) warnings in every suite.
+jest.mock('@/components/FlashMessage', () => ({
+  FlashMessage: ({ message }: { message: string }) => {
+    const React = require('react');
+    const { Text } = require('react-native');
+    return React.createElement(Text, { testID: 'flash-message' }, message);
+  },
+}));
+
+// Mock Button globally — ActivityIndicator (Animated) inside Button leaks state
+// between tests when loading transitions occur.
+jest.mock('@/components/Button', () => ({
+  Button: ({
+    title,
+    onPress,
+    testID,
+    disabled,
+    loading,
+  }: {
+    title: string;
+    onPress: () => void;
+    testID?: string;
+    disabled?: boolean;
+    loading?: boolean;
+  }) => {
+    const React = require('react');
+    const { TouchableOpacity, Text } = require('react-native');
+    return React.createElement(
+      TouchableOpacity,
+      {
+        onPress,
+        testID,
+        disabled: disabled || loading,
+        accessibilityRole: 'button',
+        accessibilityState: { disabled: !!(disabled || loading) },
+      },
+      !loading && React.createElement(Text, null, title),
+    );
+  },
+}));
+
+// Silence known noisy warnings that don't affect test correctness.
 const originalError = console.error;
+const originalWarn = console.warn;
+
+const SUPPRESSED_PATTERNS = [
+  'Warning: ReactDOM.render is no longer supported',
+  // Animated components firing after test completion — benign in RN test env
+  'An update to Animated',
+  'inside a test was not wrapped in act',
+];
+
+function shouldSuppress(args: unknown[]): boolean {
+  if (typeof args[0] !== 'string') return false;
+  return SUPPRESSED_PATTERNS.some(p => (args[0] as string).includes(p));
+}
+
 beforeAll(() => {
   console.error = (...args: unknown[]) => {
-    if (
-      typeof args[0] === 'string' &&
-      args[0].includes('Warning: ReactDOM.render is no longer supported')
-    ) {
-      return;
-    }
-    originalError.call(console, ...args);
+    if (!shouldSuppress(args)) originalError.call(console, ...args);
+  };
+  console.warn = (...args: unknown[]) => {
+    if (!shouldSuppress(args)) originalWarn.call(console, ...args);
   };
 });
 
 afterAll(() => {
   console.error = originalError;
+  console.warn = originalWarn;
 });

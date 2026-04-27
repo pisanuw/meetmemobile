@@ -32,8 +32,8 @@ describe('useDeepLinkHandler', () => {
     expect(remove).toHaveBeenCalledTimes(1);
   });
 
-  it('navigates to webview-auth for a magic-link URL from addEventListener', () => {
-    const magicUrl = 'https://meetme.pisan.me/api/auth/magic?token=abc';
+  it('navigates to webview-auth for a /api/auth/magic-link/verify URL', () => {
+    const magicUrl = 'https://meetme.pisan.me/api/auth/magic-link/verify?token=abc';
     let capturedListener!: (event: { url: string }) => void;
     mockAddEventListener.mockImplementation((_event: string, listener: (e: { url: string }) => void) => {
       capturedListener = listener;
@@ -50,8 +50,8 @@ describe('useDeepLinkHandler', () => {
     });
   });
 
-  it('navigates to webview-auth for a verify URL from addEventListener', () => {
-    const verifyUrl = 'https://meetme.pisan.me/api/auth/verify?token=xyz';
+  it('does not navigate for old /api/auth/magic URL pattern (wrong endpoint)', () => {
+    const oldUrl = 'https://meetme.pisan.me/api/auth/magic?token=abc';
     let capturedListener!: (event: { url: string }) => void;
     mockAddEventListener.mockImplementation((_event: string, listener: (e: { url: string }) => void) => {
       capturedListener = listener;
@@ -60,12 +60,10 @@ describe('useDeepLinkHandler', () => {
     mockGetInitialURL.mockResolvedValue(null);
 
     renderHook(() => useDeepLinkHandler());
-    capturedListener({ url: verifyUrl });
+    capturedListener({ url: oldUrl });
 
-    expect(mockPush).toHaveBeenCalledWith({
-      pathname: '/(auth)/webview-auth',
-      params: { mode: 'magic', url: verifyUrl },
-    });
+    // Old endpoint no longer matched — backend uses /magic-link/verify
+    expect(mockPush).not.toHaveBeenCalled();
   });
 
   it('does not navigate for non-auth URLs from addEventListener', () => {
@@ -83,11 +81,11 @@ describe('useDeepLinkHandler', () => {
   });
 
   it('handles a magic-link URL from getInitialURL (cold-start)', async () => {
-    const magicUrl = 'https://meetme.pisan.me/api/auth/magic?token=cold';
+    const magicUrl = 'https://meetme.pisan.me/api/auth/magic-link/verify?token=cold';
     mockAddEventListener.mockReturnValue({ remove: jest.fn() });
     mockGetInitialURL.mockResolvedValue(magicUrl);
 
-    const { result } = renderHook(() => useDeepLinkHandler());
+    renderHook(() => useDeepLinkHandler());
     // Let the getInitialURL promise resolve
     await new Promise(resolve => setTimeout(resolve, 0));
 

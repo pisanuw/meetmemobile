@@ -23,22 +23,21 @@ const mockPost = client.post as jest.Mock;
 
 afterEach(() => jest.resetAllMocks());
 
-const MOCK_USER = {
+// Raw shape returned by /api/auth/me (flat, snake_case)
+const RAW_ME = {
   id: 'u1',
   email: 'alice@example.com',
-  name: 'Alice',
-  timezone: 'America/New_York',
-  hasGoogleCalendar: false,
-  isAdmin: false,
-  createdAt: '2024-01-01T00:00:00Z',
+  name: 'Alice Smith',
+  is_admin: false,
 };
 
 describe('sendMagicLink()', () => {
-  it('posts to /api/auth/send-magic-link with email', async () => {
+  it('posts to /api/auth/magic-link/request with email and empty name', async () => {
     mockPost.mockResolvedValue({ message: 'sent' });
     const result = await sendMagicLink('alice@example.com');
-    expect(mockPost).toHaveBeenCalledWith('/api/auth/send-magic-link', {
+    expect(mockPost).toHaveBeenCalledWith('/api/auth/magic-link/request', {
       email: 'alice@example.com',
+      name: '',
     });
     expect(result.message).toBe('sent');
   });
@@ -50,11 +49,22 @@ describe('sendMagicLink()', () => {
 });
 
 describe('getMe()', () => {
-  it('returns the user when authenticated', async () => {
-    mockGet.mockResolvedValue({ user: MOCK_USER });
+  it('maps flat backend response to User with camelCase fields', async () => {
+    mockGet.mockResolvedValue(RAW_ME);
     const user = await getMe();
-    expect(user).toEqual(MOCK_USER);
+    expect(user).toEqual({
+      id: 'u1',
+      email: 'alice@example.com',
+      name: 'Alice Smith',
+      isAdmin: false,
+    });
     expect(mockGet).toHaveBeenCalledWith('/api/auth/me');
+  });
+
+  it('maps is_admin: true to isAdmin: true', async () => {
+    mockGet.mockResolvedValue({ ...RAW_ME, is_admin: true });
+    const user = await getMe();
+    expect(user?.isAdmin).toBe(true);
   });
 
   it('returns null on 401 (not authenticated)', async () => {
@@ -80,25 +90,36 @@ describe('logout()', () => {
 });
 
 describe('updateProfile()', () => {
-  it('posts profile update and returns updated user', async () => {
-    const updated = { ...MOCK_USER, name: 'Alice B.' };
-    mockPost.mockResolvedValue({ user: updated });
-    const result = await updateProfile({ name: 'Alice B.', timezone: 'UTC' });
-    expect(result.name).toBe('Alice B.');
+  it('splits name into first_name / last_name for backend', async () => {
+    mockPost.mockResolvedValue({ success: true, name: 'Alice B.' });
+    await updateProfile({ name: 'Alice B.', timezone: 'UTC' });
     expect(mockPost).toHaveBeenCalledWith('/api/auth/profile', {
-      name: 'Alice B.',
+      first_name: 'Alice',
+      last_name: 'B.',
+      timezone: 'UTC',
+    });
+  });
+
+  it('handles single-word name (no last name)', async () => {
+    mockPost.mockResolvedValue({ success: true, name: 'Alice' });
+    await updateProfile({ name: 'Alice', timezone: 'UTC' });
+    expect(mockPost).toHaveBeenCalledWith('/api/auth/profile', {
+      first_name: 'Alice',
+      last_name: '',
       timezone: 'UTC',
     });
   });
 });
 
 describe('submitFeedback()', () => {
-  it('posts feedback correctly', async () => {
+  it('posts feedback with email, name, type, and message', async () => {
     mockPost.mockResolvedValue(undefined);
-    await submitFeedback('Great app!', 'feature');
+    await submitFeedback('Great app!', 'feature', 'alice@example.com');
     expect(mockPost).toHaveBeenCalledWith('/api/auth/feedback', {
-      message: 'Great app!',
+      name: '',
+      email: 'alice@example.com',
       type: 'feature',
+      message: 'Great app!',
     });
   });
 });

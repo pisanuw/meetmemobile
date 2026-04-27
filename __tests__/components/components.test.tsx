@@ -1,11 +1,17 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react-native';
+import { MeetingListItem } from '@/types';
+
+// This file tests the real component implementations — unmock globals set in jest.setup.ts
+jest.unmock('@/components/Button');
+jest.unmock('@/components/FlashMessage');
+jest.unmock('@/components/LoadingScreen');
+
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { MeetingCard } from '@/components/MeetingCard';
 import { FlashMessage } from '@/components/FlashMessage';
 import { LoadingScreen } from '@/components/LoadingScreen';
-import { MeetingListItem } from '@/types';
 
 // ─── Button ──────────────────────────────────────────────────────────────────
 

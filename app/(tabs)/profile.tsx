@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { updateProfile, submitFeedback } from '@/api/auth';
 import { Button } from '@/components/Button';
@@ -36,6 +37,7 @@ const TIMEZONES = [
 ];
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const { user, refreshUser, logout } = useAuth();
   const { flash, showFlash, clearFlash } = useFlash();
 
@@ -84,7 +86,7 @@ export default function ProfileScreen() {
     }
     setIsSendingFeedback(true);
     try {
-      await submitFeedback(feedbackText.trim(), feedbackType);
+      await submitFeedback(feedbackText.trim(), feedbackType, user.email);
       setFeedbackText('');
       showFlash('Feedback sent — thank you!', 'success');
     } catch (err: unknown) {
@@ -244,6 +246,9 @@ export default function ProfileScreen() {
         <View style={styles.appInfo}>
           <Text style={styles.appInfoText}>MeetMe v0.1.0</Text>
           <Text style={styles.appInfoText}>meetme.pisan.me</Text>
+          <TouchableOpacity onPress={() => router.push('/(tabs)/privacy')} testID="privacy-link">
+            <Text style={styles.privacyLink}>Privacy Policy</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -383,4 +388,5 @@ const styles = StyleSheet.create({
   feedbackTypeTextActive: { color: COLORS.primaryDark },
   appInfo: { alignItems: 'center', gap: 4, paddingVertical: SPACING.sm },
   appInfoText: { fontSize: TYPOGRAPHY.fontSizes.xs, color: COLORS.textMuted },
+  privacyLink: { fontSize: TYPOGRAPHY.fontSizes.xs, color: COLORS.primary, textDecorationLine: 'underline' },
 });

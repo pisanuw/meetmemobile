@@ -5,7 +5,6 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  PanResponder,
 } from 'react-native';
 import { TimeSlot } from '@/types';
 import { COLORS, SPACING, TYPOGRAPHY, slotToTime } from '@/config';
@@ -43,37 +42,22 @@ export function AvailabilityGrid({
   onChange,
 }: AvailabilityGridProps) {
   const [selected, setSelected] = useState<Set<string>>(() => slotsToSet(initialSlots));
-  // Track whether a drag gesture is selecting or deselecting
-  const [dragMode, setDragMode] = useState<'select' | 'deselect' | null>(null);
 
   const toggleCell = useCallback(
-    (date: string, slot: number, mode?: 'select' | 'deselect') => {
+    (date: string, slot: number) => {
       const key = `${date}:${slot}`;
       setSelected(prev => {
         const next = new Set(prev);
-        const isSelected = next.has(key);
-
-        const shouldSelect = mode === 'select' || (!mode && !isSelected);
-        if (shouldSelect) {
-          next.add(key);
-        } else {
+        if (next.has(key)) {
           next.delete(key);
+        } else {
+          next.add(key);
         }
         onChange(setToSlots(next));
         return next;
       });
     },
     [onChange],
-  );
-
-  const handleCellPress = useCallback(
-    (date: string, slot: number) => {
-      const key = `${date}:${slot}`;
-      const mode = selected.has(key) ? 'deselect' : 'select';
-      setDragMode(mode);
-      toggleCell(date, slot, mode);
-    },
-    [selected, toggleCell],
   );
 
   const totalSlots = endSlot - startSlot;
@@ -123,8 +107,7 @@ export function AvailabilityGrid({
               return (
                 <TouchableOpacity
                   key={slot}
-                  onPress={() => handleCellPress(date, slot)}
-                  onLongPress={() => handleCellPress(date, slot)}
+                  onPress={() => toggleCell(date, slot)}
                   style={[
                     styles.cell,
                     isSelected ? styles.cellSelected : styles.cellEmpty,
