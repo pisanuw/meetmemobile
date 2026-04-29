@@ -11,14 +11,33 @@
 const { expo: baseConfig } = require('./app.json');
 
 const BASE_URL = process.env.API_BASE_URL ?? 'https://meetme.pisan.me';
-const EAS_PROJECT_ID =
-  process.env.EAS_PROJECT_ID ?? '00000000-0000-0000-0000-000000000000';
+const EAS_PROJECT_ID = process.env.EAS_PROJECT_ID ?? baseConfig?.extra?.eas?.projectId;
+const EAS_UPDATES_URL = EAS_PROJECT_ID ? `https://u.expo.dev/${EAS_PROJECT_ID}` : undefined;
+
+if (EAS_PROJECT_ID === '00000000-0000-0000-0000-000000000000') {
+  throw new Error(
+    'Invalid EAS project ID. Set EAS_PROJECT_ID to your real Expo project ID, or remove the placeholder from app config.'
+  );
+}
 
 /** @type {import('expo/config').ExpoConfig} */
 module.exports = {
   ...baseConfig,
+  ...(EAS_UPDATES_URL
+    ? {
+        updates: {
+          ...baseConfig.updates,
+          url: EAS_UPDATES_URL,
+        },
+      }
+    : {}),
+  runtimeVersion: {
+    ...(typeof baseConfig.runtimeVersion === 'object' ? baseConfig.runtimeVersion : {}),
+    policy: 'appVersion',
+  },
   extra: {
+    ...baseConfig.extra,
     apiBaseUrl: BASE_URL,
-    eas: { projectId: EAS_PROJECT_ID },
+    ...(EAS_PROJECT_ID ? { eas: { projectId: EAS_PROJECT_ID } } : {}),
   },
 };

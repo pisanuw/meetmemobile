@@ -1,3 +1,5 @@
+Include this instruction at the beginning of the AI-log.md file so you never forget to log things.
+
 # AI Log
 > **Instruction:** Record all user instructions verbatim, EXACTLY as typed by the user, in this file.
 > Each entry must include a timestamp with hour and minute obtained from `date "+%Y-%m-%dT%H:%M"`.
@@ -349,7 +351,7 @@ help me with "App Store Connect setup (no code, just admin work)"
 
 User to Claude version 2026-04-27T10:03:
 Help me with "Register an App ID"
-What should be 
+What should be
 Description
 Bundle ID
 
@@ -358,7 +360,7 @@ What capabilities need to be enabled
 ## 2026-04-27T10:09
 
 User to Claude version 2026-04-27T10:09:
-I changed bundle id to be "me.pisan.meetme" 
+I changed bundle id to be "me.pisan.meetme"
 Change code as necessary
 
 ## 2026-04-27T10:12
@@ -411,9 +413,9 @@ Do we need such long tokens? Make the tokens 16 characters long.
 ## 2026-04-29T09:10
 
 User to Claude version 2026-04-29T09:10:
-When the mobile app starts, it should have the days of week selected, Monday-Friday selected. 
+When the mobile app starts, it should have the days of week selected, Monday-Friday selected.
 
-Selecting "Specific dates" should list the dates on a single line with the option to scroll left and right for more dates. 
+Selecting "Specific dates" should list the dates on a single line with the option to scroll left and right for more dates.
 
 I want to make sure the "Create Meeting" button does not move when "Specific Dates" or "Days of Week" is selected
 
@@ -426,3 +428,36 @@ I still see specific dates selected when I start the mobile app on exp using sim
 
 User to Claude version 2026-04-29T09:30:
 For mobile app, on the availability screen, the app jumps to "Your Name?" box as soon as I click availability
+
+2026-04-29T09:34 User to Claude version XXX:
+Error message
+
+eas build --platform ios --profile production
+
+Detected that your app uses Expo Go for development, this is not recommended when building production apps.
+Learn more
+To suppress this warning, set EAS_BUILD_NO_EXPO_GO_WARNING=true.
+
+Experience with id '00000000-0000-0000-0000-000000000000' does not exist.
+Request ID: ac10180c-3a31-4159-8e3c-f9342eef3caa
+    Error: GraphQL request failed.
+
+## 2026-04-29T10:16
+
+User to Claude version XXX:
+yes
+
+## 2026-04-29T10:18
+
+User to Claude version XXX:
+yes
+
+## 2026-04-29T10:20
+
+User to Claude version XXX:
+yes
+
+## 2026-04-29T10:22
+
+User to Claude version XXX:
+Yes

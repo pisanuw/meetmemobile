@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 10.0.0"
+    "version": ">= 10.0.0",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -12,6 +13,9 @@
     },
     "preview": {
       "distribution": "internal",
+      "env": {
+        "EAS_BUILD_NO_EXPO_GO_WARNING": "true"
+      },
       "ios": {
         "simulator": false
       },
@@ -20,6 +24,9 @@
     "production": {
       "autoIncrement": true,
       "channel": "production",
+      "env": {
+        "EAS_BUILD_NO_EXPO_GO_WARNING": "true"
+      },
       "ios": {
         "simulator": false
       }
@@ -29,7 +36,7 @@
     "production": {
       "ios": {
         "appleId": "yusufappleus@pisan.me",
-        "ascAppId": "REPLACE_WITH_APP_STORE_CONNECT_APP_ID",
+        "ascAppId": "6764114513",
         "appleTeamId": "GY4TW98N7A"
       }
     }
