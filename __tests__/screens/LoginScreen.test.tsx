@@ -129,6 +129,66 @@ describe('LoginScreen', () => {
     expect(mockOnAuthSuccess).not.toHaveBeenCalled();
   });
 
+  it('send button is enabled and labelled "Sign In with Token" for a JWT token', () => {
+    render(<LoginScreen />);
+    const token = 'AbCdEfGhIjKlMnOp';
+    fireEvent.changeText(screen.getByTestId('email-input'), token);
+    const btn = screen.getByTestId('send-link-button');
+    expect(btn.props.accessibilityState?.disabled).toBe(false);
+    expect(screen.getByText('Sign In with Token')).toBeTruthy();
+  });
+
+  it('send button is disabled for non-email non-token input', () => {
+    render(<LoginScreen />);
+    fireEvent.changeText(screen.getByTestId('email-input'), 'notanemailortoken');
+    const btn = screen.getByTestId('send-link-button');
+    expect(btn.props.accessibilityState?.disabled).toBe(true);
+  });
+
+  it('reverts to Send Magic Link and disables button when token is edited', () => {
+    render(<LoginScreen />);
+    const token = 'AbCdEfGhIjKlMnOp';
+    const input = screen.getByTestId('email-input');
+
+    // Paste token — button becomes Sign In with Token
+    fireEvent.changeText(input, token);
+    expect(screen.getByText('Sign In with Token')).toBeTruthy();
+
+    // Edit the token — button reverts and disables
+    fireEvent.changeText(input, token + 'x');
+    expect(screen.getByText('Send Magic Link')).toBeTruthy();
+    expect(screen.getByTestId('send-link-button').props.accessibilityState?.disabled).toBe(true);
+  });
+
+  it('allows a new token after clearing the field', () => {
+    render(<LoginScreen />);
+    const token = 'AbCdEfGhIjKlMnOp';
+    const input = screen.getByTestId('email-input');
+
+    fireEvent.changeText(input, token);
+    fireEvent.changeText(input, token + 'x'); // edit — locked out
+    fireEvent.changeText(input, '');           // clear — resets to normal
+    fireEvent.changeText(input, token);        // paste fresh token — re-detected
+    expect(screen.getByText('Sign In with Token')).toBeTruthy();
+  });
+
+  it('navigates to webview-auth with verify URL when token is submitted', () => {
+    render(<LoginScreen />);
+    const token = 'AbCdEfGhIjKlMnOp';
+    fireEvent.changeText(screen.getByTestId('email-input'), token);
+    fireEvent.press(screen.getByTestId('send-link-button'));
+    expect(mockPush).toHaveBeenCalledWith(
+      expect.objectContaining({
+        pathname: '/(auth)/webview-auth',
+        params: expect.objectContaining({
+          mode: 'magic',
+          url: expect.stringContaining('/api/auth/magic-link/verify?token='),
+        }),
+      }),
+    );
+    expect(mockSendMagicLink).not.toHaveBeenCalled();
+  });
+
   it('trims and lowercases email before sending', async () => {
     mockSendMagicLink.mockResolvedValue({ message: 'sent' });
     render(<LoginScreen />);

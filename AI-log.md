@@ -365,3 +365,64 @@ Change code as necessary
 
 User to Claude version 2026-04-27T10:12:
 Put the privacy policy at https://meetme.pisan.me/privacy.html
+
+## 2026-04-27T10:22
+
+User to Claude version 2026-04-27T10:22:
+Expo opens the simulator for "iPhone 17 Pro" how do I switch it to "iPhone 6.7""
+
+## 2026-04-27T10:23
+
+User to Claude version 2026-04-27T10:23:
+npx expo start --simulator "iPhone 16 Plus"
+unknown or unexpected option: --simulator
+
+## 2026-04-27T10:27
+
+User to Claude version 2026-04-27T10:27:
+$ xcrun simctl boot "iPhone 16 Plus"
+Invalid device or device pair: iPhone 16 Plus
+
+## 2026-04-27T10:35
+
+User to Claude version 2026-04-27T10:35:
+When an anonymous meeting is created, in addition to the invit elink and admin link, provide a way for the user to continue to the availability page as an administrator
+
+## 2026-04-29T08:35
+
+User to Claude version 2026-04-29T08:35:
+Modify the code so that if the token for the magic link is entered into the "Sign in with email" box, it allows the user to login rather than sending a magic link. If the token is not valid the send magic link should not be clickable
+
+## 2026-04-29T08:42
+
+User to Claude version 2026-04-29T08:42:
+Once button switches to "sign-in with Token" if the box is edited in any way, it should go back to the original "Send magic link" otherwise user could modify token value and then still press the sign in with token button
+
+## 2026-04-29T08:50
+
+User to Claude version 2026-04-29T08:50:
+The login colors for the mobile app is green at the login screen but blue afterwards. Make it blue from the beginning
+
+## 2026-04-29T09:00
+
+User to Claude version 2026-04-29T09:00:
+Do we need such long tokens? Make the tokens 16 characters long.
+
+## 2026-04-29T09:10
+
+User to Claude version 2026-04-29T09:10:
+When the mobile app starts, it should have the days of week selected, Monday-Friday selected. 
+
+Selecting "Specific dates" should list the dates on a single line with the option to scroll left and right for more dates. 
+
+I want to make sure the "Create Meeting" button does not move when "Specific Dates" or "Days of Week" is selected
+
+## 2026-04-29T09:20
+
+User to Claude version 2026-04-29T09:20:
+I still see specific dates selected when I start the mobile app on exp using simulator
+
+## 2026-04-29T09:30
+
+User to Claude version 2026-04-29T09:30:
+For mobile app, on the availability screen, the app jumps to "Your Name?" box as soon as I click availability

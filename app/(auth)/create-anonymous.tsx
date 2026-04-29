@@ -26,9 +26,11 @@ export default function CreateAnonymousScreen() {
   const [creatorName, setCreatorName] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [scheduleMode, setScheduleMode] = useState<ScheduleMode>('specific');
+  const [scheduleMode, setScheduleMode] = useState<ScheduleMode>('weekly');
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [selectedDays, setSelectedDays] = useState<string[]>([
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+  ]);
   const [startSlot, setStartSlot] = useState(32); // 8 AM
   const [endSlot, setEndSlot] = useState(68);     // 5 PM
   const [isLoading, setIsLoading] = useState(false);
@@ -213,43 +215,52 @@ export default function CreateAnonymousScreen() {
           <Text style={[styles.sectionLabel, { marginTop: SPACING.sm }]}>
             {scheduleMode === 'specific' ? 'Select Dates' : 'Select Days'}
           </Text>
-          <View style={styles.dateGrid}>
-            {scheduleMode === 'specific'
-              ? candidateDates.map(date => {
-                  const isSelected = selectedDates.includes(date);
-                  const d = new Date(date + 'T00:00:00');
-                  const label = d.toLocaleDateString('en-US', {
-                    weekday: 'short',
-                    month: 'short',
-                    day: 'numeric',
-                  });
-                  return (
-                    <TouchableOpacity
-                      key={date}
-                      style={[styles.dateChip, isSelected && styles.dateChipSelected]}
-                      onPress={() => toggleDate(date)}
-                    >
-                      <Text style={[styles.dateChipText, isSelected && styles.dateChipTextSelected]}>
-                        {label}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })
-              : DAYS_OF_WEEK.map(day => {
-                  const isSelected = selectedDays.includes(day);
-                  return (
-                    <TouchableOpacity
-                      key={day}
-                      style={[styles.dayChip, isSelected && styles.dateChipSelected]}
-                      onPress={() => toggleDay(day)}
-                    >
-                      <Text style={[styles.dateChipText, isSelected && styles.dateChipTextSelected]}>
-                        {DAY_SHORT[day]}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-          </View>
+
+          {scheduleMode === 'specific' ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.dateRow}
+            >
+              {candidateDates.map(date => {
+                const isSelected = selectedDates.includes(date);
+                const d = new Date(date + 'T00:00:00');
+                const label = d.toLocaleDateString('en-US', {
+                  weekday: 'short',
+                  month: 'short',
+                  day: 'numeric',
+                });
+                return (
+                  <TouchableOpacity
+                    key={date}
+                    style={[styles.dateChip, isSelected && styles.dateChipSelected]}
+                    onPress={() => toggleDate(date)}
+                  >
+                    <Text style={[styles.dateChipText, isSelected && styles.dateChipTextSelected]}>
+                      {label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          ) : (
+            <View style={styles.dayGrid}>
+              {DAYS_OF_WEEK.map(day => {
+                const isSelected = selectedDays.includes(day);
+                return (
+                  <TouchableOpacity
+                    key={day}
+                    style={[styles.dayChip, isSelected && styles.dateChipSelected]}
+                    onPress={() => toggleDay(day)}
+                  >
+                    <Text style={[styles.dateChipText, isSelected && styles.dateChipTextSelected]}>
+                      {DAY_SHORT[day]}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          )}
         </Card>
 
         {/* Time range */}
@@ -337,7 +348,8 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
   },
   modeButtonTextActive: { color: COLORS.primaryDark },
-  dateGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.xs, marginTop: 4 },
+  dateRow: { flexDirection: 'row', gap: SPACING.xs, paddingVertical: 4, alignItems: 'center' },
+  dayGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.xs, marginTop: 4 },
   dateChip: {
     paddingHorizontal: 10,
     paddingVertical: 6,

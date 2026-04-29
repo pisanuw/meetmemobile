@@ -72,6 +72,7 @@ const container = StyleSheet.create<Record<string, ViewStyle>>({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    alignSelf: 'stretch',
   },
   primary: { backgroundColor: COLORS.primary },
   outline: { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: COLORS.primary },

@@ -6,9 +6,9 @@ export const API_BASE_URL: string =
   'https://meetme.pisan.me';
 
 export const COLORS = {
-  primary: '#10b981',      // emerald-500
-  primaryDark: '#059669',  // emerald-600
-  primaryLight: '#d1fae5', // emerald-100
+  primary: '#3b82f6',      // blue-500
+  primaryDark: '#2563eb',  // blue-600
+  primaryLight: '#dbeafe', // blue-100
   background: '#f9fafb',   // gray-50
   surface: '#ffffff',
   border: '#e5e7eb',       // gray-200

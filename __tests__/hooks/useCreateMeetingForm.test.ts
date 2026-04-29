@@ -47,10 +47,13 @@ describe('DAYS_OF_WEEK / DAY_SHORT', () => {
 });
 
 describe('useCreateMeetingForm', () => {
-  it('initialises with empty title and specific mode', () => {
+  it('initialises with empty title, weekly mode, and Mon-Fri selected', () => {
     const { result } = renderHook(() => useCreateMeetingForm());
     expect(result.current.title).toBe('');
-    expect(result.current.scheduleMode).toBe('specific');
+    expect(result.current.scheduleMode).toBe('weekly');
+    expect(result.current.selectedDays).toEqual([
+      'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+    ]);
     expect(result.current.isLoading).toBe(false);
   });
 
@@ -62,12 +65,14 @@ describe('useCreateMeetingForm', () => {
     expect(result.current.selectedDates).not.toContain('2025-06-01');
   });
 
-  it('toggleDay adds and removes a day', () => {
+  it('toggleDay removes a pre-selected day and adds it back', () => {
     const { result } = renderHook(() => useCreateMeetingForm());
-    act(() => result.current.toggleDay('Monday'));
-    expect(result.current.selectedDays).toContain('Monday');
+    // Monday is pre-selected — first toggle removes it
     act(() => result.current.toggleDay('Monday'));
     expect(result.current.selectedDays).not.toContain('Monday');
+    // second toggle adds it back
+    act(() => result.current.toggleDay('Monday'));
+    expect(result.current.selectedDays).toContain('Monday');
   });
 
   it('changeStartSlot clamps to 0', () => {
@@ -101,16 +106,22 @@ describe('useCreateMeetingForm', () => {
 
   it('handleCreate shows error when no dates selected in specific mode', async () => {
     const { result } = renderHook(() => useCreateMeetingForm());
-    act(() => result.current.setTitle('My Meeting'));
+    act(() => {
+      result.current.setTitle('My Meeting');
+      result.current.setScheduleMode('specific'); // switch away from default weekly
+    });
     await act(async () => { await result.current.handleCreate(); });
     expect(result.current.flash?.message).toContain('select at least one date');
   });
 
   it('handleCreate shows error when no days selected in weekly mode', async () => {
     const { result } = renderHook(() => useCreateMeetingForm());
+    // Deselect all pre-selected days
     act(() => {
       result.current.setTitle('My Meeting');
-      result.current.setScheduleMode('weekly');
+      ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach(
+        d => result.current.toggleDay(d),
+      );
     });
     await act(async () => { await result.current.handleCreate(); });
     expect(result.current.flash?.message).toContain('day of the week');
@@ -119,11 +130,8 @@ describe('useCreateMeetingForm', () => {
   it('handleCreate calls createMeeting and navigates on success', async () => {
     mockCreate.mockResolvedValue({ id: 'new-id' });
     const { result } = renderHook(() => useCreateMeetingForm());
-    act(() => {
-      result.current.setTitle('Test');
-      result.current.setScheduleMode('weekly');
-      result.current.toggleDay('Monday');
-    });
+    // Default is weekly with Mon-Fri pre-selected — just set the title
+    act(() => result.current.setTitle('Test'));
     await act(async () => { await result.current.handleCreate(); });
     expect(mockCreate).toHaveBeenCalled();
     expect(mockReplace).toHaveBeenCalledWith('/(tabs)/meetings/new-id');

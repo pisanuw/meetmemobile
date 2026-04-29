@@ -36,9 +36,11 @@ export function useCreateMeetingForm() {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [scheduleMode, setScheduleMode] = useState<ScheduleMode>('specific');
+  const [scheduleMode, setScheduleMode] = useState<ScheduleMode>('weekly');
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [selectedDays, setSelectedDays] = useState<string[]>([
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+  ]);
   const [startSlot, setStartSlot] = useState(32); // 8 AM
   const [endSlot, setEndSlot] = useState(68);     // 5 PM
   const [emailsText, setEmailsText] = useState('');

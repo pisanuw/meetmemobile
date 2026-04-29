@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import { sendMagicLink } from '@/api/auth';
-import { isValidEmail } from '@/utils/validation';
+import { isValidEmail, isMagicLinkToken } from '@/utils/validation';
 import { Button } from '@/components/Button';
 import { FlashMessage } from '@/components/FlashMessage';
 import { useFlash } from '@/hooks/useFlash';
@@ -29,9 +29,32 @@ export default function LoginScreen() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const { flash, showFlash, clearFlash } = useFlash();
 
+  // State machine: normal → token_detected → token_edited
+  // Once the user edits a detected token it never re-qualifies until the field is cleared.
+  const [tokenState, setTokenState] = useState<'normal' | 'token_detected' | 'token_edited'>('normal');
+
+  function handleEmailChange(value: string) {
+    const looksLikeToken = isMagicLinkToken(value);
+    setTokenState(prev => {
+      if (prev === 'token_detected') return 'token_edited';  // any edit locks out
+      if (!looksLikeToken) return 'normal';
+      if (prev === 'normal') return 'token_detected';        // fresh paste/entry
+      return prev;                                           // token_edited stays locked out
+    });
+    setEmail(value);
+  }
+
   const emailIsValid = isValidEmail(email);
+  const isToken = tokenState === 'token_detected';
+  const canSubmit = emailIsValid || isToken;
 
   async function handleSendLink() {
+    if (isToken) {
+      // User pasted a magic-link token directly — verify it via WebView (same flow as deep links)
+      const verifyUrl = `${API_BASE_URL}/api/auth/magic-link/verify?token=${encodeURIComponent(email.trim())}`;
+      router.push({ pathname: '/(auth)/webview-auth', params: { mode: 'magic', url: verifyUrl } });
+      return;
+    }
     if (!emailIsValid) {
       showFlash('Please enter a valid email address', 'error');
       return;
@@ -98,13 +121,15 @@ export default function LoginScreen() {
 
           {/* Magic link form */}
           <View style={styles.form}>
-            <Text style={styles.sectionLabel}>Sign in with email</Text>
+            <Text style={styles.sectionLabel}>
+              {isToken ? 'Sign in with token' : 'Sign in with email'}
+            </Text>
             <TextInput
               style={styles.input}
               placeholder="you@example.com"
               placeholderTextColor={COLORS.textMuted}
               value={email}
-              onChangeText={setEmail}
+              onChangeText={handleEmailChange}
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
@@ -114,10 +139,10 @@ export default function LoginScreen() {
               testID="email-input"
             />
             <Button
-              title="Send Magic Link"
+              title={isToken ? 'Sign In with Token' : 'Send Magic Link'}
               onPress={handleSendLink}
               loading={isLoading}
-              disabled={!emailIsValid}
+              disabled={!canSubmit}
               size="lg"
               style={styles.button}
               testID="send-link-button"

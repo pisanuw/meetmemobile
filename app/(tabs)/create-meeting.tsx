@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
@@ -23,6 +23,7 @@ import {
 
 export default function CreateMeetingScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const {
     title, setTitle,
     description, setDescription,
@@ -149,49 +150,55 @@ export default function CreateMeetingScreen() {
           <Text style={[styles.sectionLabel, { marginTop: SPACING.sm }]}>
             {scheduleMode === 'specific' ? 'Select Dates' : 'Select Days'}
           </Text>
-          <View style={styles.dateGrid}>
-            {scheduleMode === 'specific'
-              ? candidateDates.map(date => {
-                  const isSelected = selectedDates.includes(date);
-                  const d = new Date(date + 'T00:00:00');
-                  const label = d.toLocaleDateString('en-US', {
-                    weekday: 'short',
-                    month: 'short',
-                    day: 'numeric',
-                  });
-                  return (
-                    <TouchableOpacity
-                      key={date}
-                      style={[styles.dateChip, isSelected && styles.dateChipSelected]}
-                      onPress={() => toggleDate(date)}
-                      testID={`date-chip-${date}`}
-                    >
-                      <Text
-                        style={[styles.dateChipText, isSelected && styles.dateChipTextSelected]}
-                      >
-                        {label}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })
-              : DAYS_OF_WEEK.map(day => {
-                  const isSelected = selectedDays.includes(day);
-                  return (
-                    <TouchableOpacity
-                      key={day}
-                      style={[styles.dayChip, isSelected && styles.dateChipSelected]}
-                      onPress={() => toggleDay(day)}
-                      testID={`day-chip-${day}`}
-                    >
-                      <Text
-                        style={[styles.dateChipText, isSelected && styles.dateChipTextSelected]}
-                      >
-                        {DAY_SHORT[day]}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-          </View>
+
+          {scheduleMode === 'specific' ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.dateRow}
+              testID="date-scroll"
+            >
+              {candidateDates.map(date => {
+                const isSelected = selectedDates.includes(date);
+                const d = new Date(date + 'T00:00:00');
+                const label = d.toLocaleDateString('en-US', {
+                  weekday: 'short',
+                  month: 'short',
+                  day: 'numeric',
+                });
+                return (
+                  <TouchableOpacity
+                    key={date}
+                    style={[styles.dateChip, isSelected && styles.dateChipSelected]}
+                    onPress={() => toggleDate(date)}
+                    testID={`date-chip-${date}`}
+                  >
+                    <Text style={[styles.dateChipText, isSelected && styles.dateChipTextSelected]}>
+                      {label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          ) : (
+            <View style={styles.dayGrid}>
+              {DAYS_OF_WEEK.map(day => {
+                const isSelected = selectedDays.includes(day);
+                return (
+                  <TouchableOpacity
+                    key={day}
+                    style={[styles.dayChip, isSelected && styles.dateChipSelected]}
+                    onPress={() => toggleDay(day)}
+                    testID={`day-chip-${day}`}
+                  >
+                    <Text style={[styles.dateChipText, isSelected && styles.dateChipTextSelected]}>
+                      {DAY_SHORT[day]}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          )}
         </Card>
 
         {/* Time range */}
@@ -239,15 +246,18 @@ export default function CreateMeetingScreen() {
           )}
         </Card>
 
+      </ScrollView>
+
+      {/* Fixed footer — button never moves regardless of content above */}
+      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, SPACING.md) }]}>
         <Button
           title="Create Meeting"
           onPress={handleCreate}
           loading={isLoading}
           size="lg"
-          style={styles.createButton}
           testID="create-button"
         />
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -269,7 +279,7 @@ const styles = StyleSheet.create({
     fontWeight: TYPOGRAPHY.fontWeights.semibold,
     color: COLORS.text,
   },
-  scroll: { padding: SPACING.md, gap: SPACING.sm, paddingBottom: SPACING['2xl'] },
+  scroll: { padding: SPACING.md, gap: SPACING.sm, paddingBottom: SPACING.md },
   section: { gap: SPACING.xs },
   sectionLabel: {
     fontSize: TYPOGRAPHY.fontSizes.sm,
@@ -313,7 +323,13 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
   },
   modeButtonTextActive: { color: COLORS.primaryDark },
-  dateGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.xs, marginTop: 4 },
+  dateRow: {
+    flexDirection: 'row',
+    gap: SPACING.xs,
+    paddingVertical: 4,
+    alignItems: 'center',
+  },
+  dayGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.xs, marginTop: 4 },
   dateChip: {
     paddingHorizontal: 10,
     paddingVertical: 6,
@@ -377,5 +393,11 @@ const styles = StyleSheet.create({
     fontWeight: TYPOGRAPHY.fontWeights.medium,
     marginTop: 4,
   },
-  createButton: { marginTop: SPACING.sm },
+  footer: {
+    paddingHorizontal: SPACING.md,
+    paddingTop: SPACING.sm,
+    backgroundColor: COLORS.background,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
+  },
 });

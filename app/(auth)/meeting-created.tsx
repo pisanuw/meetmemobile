@@ -94,6 +94,19 @@ export default function MeetingCreatedScreen() {
           />
         </Card>
 
+        {/* Continue to availability */}
+        <Button
+          title="Continue to Availability as Admin"
+          onPress={() =>
+            router.push({
+              pathname: '/(auth)/webview-auth',
+              params: { mode: 'magic', url: adminUrl },
+            })
+          }
+          size="lg"
+          testID="continue-admin-button"
+        />
+
         {/* Sign in to claim */}
         <Card style={styles.section}>
           <Text style={styles.sectionLabel}>Want a dashboard?</Text>
