@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { getMe, logout as apiLogout } from '../api/auth';
+import { clearAuthToken } from '../api/client';
 import { User } from '../types';
 
 interface AuthState {
@@ -55,6 +56,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // Ignore errors — clear state regardless
     }
+    // Clear the stored JWT used for native Google OAuth (Bearer token auth).
+    await clearAuthToken().catch(() => undefined);
     setUser(null);
   }, []);
 

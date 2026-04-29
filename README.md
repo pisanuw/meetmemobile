@@ -2,7 +2,7 @@
 
 Native iPhone app for [MeetMe](https://meetme.pisan.me) — find the perfect meeting time across your team.
 
-Built with **Expo / React Native** using file-based routing via `expo-router`.  
+Built with **Expo / React Native** using file-based routing via `expo-router`.
 The app talks directly to the MeetMe Netlify backend at `meetme.pisan.me` — no new server needed.
 
 ---
@@ -196,3 +196,12 @@ API_BASE_URL=https://staging.meetme.pisan.me eas build --platform ios
 ```
 
 `src/config.ts` reads `Constants.expoConfig.extra.apiBaseUrl` at runtime (set by `app.config.js`).
+
+Next steps to submit:
+
+
+# Build production binary
+eas build --platform ios --profile production
+
+# Once build finishes, submit it
+eas submit --platform ios --profile production

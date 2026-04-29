@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import { sendMagicLink } from '@/api/auth';
+import { storeAuthToken } from '@/api/client';
 import { isValidEmail, isMagicLinkToken } from '@/utils/validation';
 import { Button } from '@/components/Button';
 import { FlashMessage } from '@/components/FlashMessage';
@@ -75,12 +76,19 @@ export default function LoginScreen() {
     setIsGoogleLoading(true);
     try {
       // ASWebAuthenticationSession (real Safari) — Google allows this, unlike embedded WebViews.
-      // The backend sets the token cookie normally; iOS shares it with native fetch via URLSession.
+      // The backend embeds the JWT in the meetme:// callback URL because ASWebAuthenticationSession
+      // cookies are NOT shared with URLSession (NSHTTPCookieStorage.shared).
       const result = await WebBrowser.openAuthSessionAsync(
         `${API_BASE_URL}/api/auth/google/start?mobile=1`,
         'meetme://',
       );
-      if (result.type === 'success') {
+      if (result.type === 'success' && result.url) {
+        // Extract and persist the token so the API client can send it as Bearer.
+        const callbackUrl = new URL(result.url);
+        const token = callbackUrl.searchParams.get('token');
+        if (token) {
+          await storeAuthToken(token);
+        }
         await onAuthSuccess();
         // _layout.tsx redirects to (tabs) once isAuthenticated flips
       }
@@ -217,11 +225,11 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryDark,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: SPACING.md,
-    shadowColor: COLORS.primary,
+    shadowColor: COLORS.primaryDark,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 12,

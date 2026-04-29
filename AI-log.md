@@ -461,3 +461,13 @@ yes
 
 User to Claude version XXX:
 Yes
+
+## 2026-04-29T11:12
+
+User to Claude version XXX:
+I have installed the app via TestFlight on my phone. When I use Google login, it goes back to login page and does not login to the app
+
+## 2026-04-29T11:18
+
+User to Claude version XXX:
+Meeting created page uses light blue, the availability page uses dark blue. Make the colors match. Change the Signin page to use the same dark blue

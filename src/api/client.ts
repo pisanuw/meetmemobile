@@ -1,16 +1,36 @@
 /**
  * API client for MeetMe backend.
  *
- * The backend authenticates via an HttpOnly JWT cookie named `session`.
- * On iOS, React Native's native fetch uses URLSession which honours the
- * shared iOS cookie store, so cookies set during the magic-link WebView
- * flow are automatically included in subsequent fetch calls made here.
+ * Authentication strategy:
+ *  - Web / WKWebView (magic-link): relies on the HttpOnly `token` cookie which
+ *    WKWebView writes to NSHTTPCookieStorage.shared (sharedCookiesEnabled=true).
+ *  - iOS native Google OAuth: ASWebAuthenticationSession cookies do NOT reach
+ *    URLSession. Instead, the JWT token is extracted from the meetme:// callback
+ *    URL and stored in SecureStore. We read it here and send it as Bearer.
  *
- * We always send `credentials: 'include'` to ensure cookies flow.
+ * Web requests from WKWebView still use credentials:'include' so both paths work.
  */
 
+import * as SecureStore from 'expo-secure-store';
 import { API_BASE_URL } from '../config';
 import { ApiError } from '../types';
+
+export const AUTH_TOKEN_KEY = 'auth_token';
+
+/**
+ * Persist an auth token (JWT) received from a native OAuth redirect.
+ * Call this after extracting the token from the meetme:// callback URL.
+ */
+export async function storeAuthToken(token: string): Promise<void> {
+  await SecureStore.setItemAsync(AUTH_TOKEN_KEY, token);
+}
+
+/**
+ * Clear the stored auth token (on logout).
+ */
+export async function clearAuthToken(): Promise<void> {
+  await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY);
+}
 
 export class ApiClientError extends Error {
   constructor(
@@ -28,12 +48,17 @@ async function request<T>(
 ): Promise<T> {
   const url = `${API_BASE_URL}${path}`;
 
+  // Read the stored JWT (set after native Google OAuth) and send it as Bearer.
+  // If absent, fall back to cookie-based auth (magic-link / WKWebView flows).
+  const storedToken = await SecureStore.getItemAsync(AUTH_TOKEN_KEY);
+
   const response = await fetch(url, {
     ...options,
     credentials: 'include', // send & receive cookies
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
+      ...(storedToken ? { Authorization: `Bearer ${storedToken}` } : {}),
       ...options.headers,
     },
   });
